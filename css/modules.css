@@ -1,0 +1,218 @@
+/* ============================================================
+   SHIPSENSE — MODULES CSS
+   Module-specific overrides & SVG gradient definitions
+   ============================================================ */
+
+/* ── Hidden utility ── */
+.hidden { display: none !important; }
+
+/* ── Big Score Ring (r=68, circumference≈427) ── */
+#idea-score-ring {
+  stroke-dasharray: 427;
+  stroke-dashoffset: 427;
+}
+
+/* ── Checklist ring (r=26, circumference≈163) ── */
+#checklist-ring {
+  fill: none;
+  stroke: url(#scoreGrad);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 163;
+  stroke-dashoffset: 163;
+  transition: stroke-dashoffset 0.5s ease;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+/* SVG Gradient Definitions (injected via inline SVG) */
+.svg-defs { position: absolute; width: 0; height: 0; }
+
+/* IdeaForge module accent */
+#module-ideaforge { --module-accent: #7c3aed; }
+
+/* PRD Architect accent */
+#module-prd-architect { --module-accent: #06b6d4; }
+
+/* Persona Lab accent */
+#module-persona-lab { --module-accent: #10b981; }
+
+/* Priority Matrix accent */
+#module-priority-matrix { --module-accent: #f59e0b; }
+
+/* Feedback Fusion accent */
+#module-feedback-fusion { --module-accent: #ec4899; }
+
+/* Launch Control accent */
+#module-launch-control { --module-accent: #8b5cf6; }
+
+/* ── Market Content ── */
+.market-content { display: flex; flex-direction: column; gap: var(--sp-4); }
+.market-stat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-3);
+  background: rgba(255,255,255,0.03);
+  border-radius: var(--r-md);
+}
+.ms-key { font-size: var(--fs-xs); color: var(--text-muted); }
+.ms-val {
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.market-insight {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  padding: var(--sp-3);
+  background: rgba(6,182,212,0.05);
+  border-radius: var(--r-md);
+  border-left: 2px solid var(--color-cyan);
+}
+
+/* ── Devil's Advocate Content ── */
+.devil-content { display: flex; flex-direction: column; gap: var(--sp-3); }
+.devil-risk {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: flex-start;
+  padding: var(--sp-3);
+  background: rgba(244,63,94,0.05);
+  border-radius: var(--r-md);
+  border-left: 2px solid rgba(244,63,94,0.3);
+}
+.devil-num {
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  font-weight: 800;
+  color: var(--color-rose);
+  flex-shrink: 0;
+  min-width: 20px;
+}
+.devil-risk-text { font-size: var(--fs-xs); color: var(--text-secondary); line-height: 1.5; }
+.devil-risk strong { color: var(--color-rose); font-weight: 700; }
+.devil-counter {
+  margin-top: var(--sp-1);
+  font-size: 10px;
+  color: var(--color-emerald);
+  font-style: italic;
+}
+
+/* ── Competitor Radar ── */
+.competitor-content { display: flex; flex-direction: column; gap: var(--sp-3); }
+.competitor-item {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: flex-start;
+  padding: var(--sp-3);
+  background: rgba(255,255,255,0.03);
+  border-radius: var(--r-md);
+  transition: background var(--transition-fast);
+}
+.competitor-item:hover { background: rgba(255,255,255,0.05); }
+.comp-avatar {
+  width: 32px; height: 32px;
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border-subtle);
+}
+.comp-info { flex: 1; }
+.comp-name { font-size: var(--fs-sm); font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+.comp-desc { font-size: var(--fs-xs); color: var(--text-muted); line-height: 1.4; }
+.comp-threat {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: var(--r-full);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.threat-high { background: rgba(244,63,94,0.15); color: var(--color-rose); }
+.threat-mid  { background: rgba(245,158,11,0.15); color: var(--color-amber); }
+.threat-low  { background: rgba(16,185,129,0.15); color: var(--color-emerald); }
+
+/* ── Pain Point Validator ── */
+.pain-content { display: flex; flex-direction: column; gap: var(--sp-3); }
+.pain-evidence {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: flex-start;
+  padding: var(--sp-3);
+  background: rgba(255,255,255,0.03);
+  border-radius: var(--r-md);
+}
+.pain-source {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--r-full);
+  background: rgba(124,58,237,0.15);
+  color: var(--color-violet-light);
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: 2px;
+}
+.pain-text { font-size: var(--fs-xs); color: var(--text-secondary); line-height: 1.5; }
+.pain-validation-score {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  background: rgba(16,185,129,0.08);
+  border-radius: var(--r-lg);
+  border: 1px solid rgba(16,185,129,0.2);
+  margin-top: var(--sp-2);
+}
+.pvs-label { font-size: var(--fs-xs); color: var(--text-muted); flex: 1; }
+.pvs-value {
+  font-family: var(--font-display);
+  font-size: var(--fs-md);
+  font-weight: 800;
+  color: var(--color-emerald);
+}
+
+/* ── Action Btns Row ── */
+.action-btns { display: flex; align-items: center; gap: var(--sp-2); }
+
+/* ── Persona Input Row ── */
+.persona-input-row { display: flex; gap: var(--sp-5); }
+
+/* ── Feedback Input Panel ── */
+.feedback-input-panel {
+  padding: var(--sp-5);
+  border-radius: var(--r-xl);
+}
+
+/* ── Launch Control Input ── */
+.lc-input-panel {
+  padding: var(--sp-5);
+  border-radius: var(--r-xl);
+}
+
+/* ── Scrollbar Styles ── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+/* ── Selection ── */
+::selection { background: rgba(124,58,237,0.3); color: var(--text-primary); }
+
+/* ── Focus styles ── */
+:focus-visible {
+  outline: 2px solid rgba(124,58,237,0.6);
+  outline-offset: 2px;
+}
+
+/* ── Print ── */
+@media print {
+  .sidebar, .topbar, .toast-container { display: none; }
+  .main-content { width: 100%; }
+}

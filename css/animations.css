@@ -1,0 +1,348 @@
+/* ============================================================
+   SHIPSENSE — ANIMATIONS
+   Keyframes, transitions, micro-interactions
+   ============================================================ */
+
+/* ── Keyframes ── */
+@keyframes aurora1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(60px, 40px) scale(1.1); }
+  66%       { transform: translate(-40px, 60px) scale(0.95); }
+}
+@keyframes aurora2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40%       { transform: translate(-80px, 30px) scale(1.15); }
+  70%       { transform: translate(50px, -40px) scale(0.9); }
+}
+@keyframes aurora3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%       { transform: translate(40px, -60px) scale(1.2); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50%       { transform: translateY(-12px) rotate(1deg); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.85); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideInModule {
+  from { opacity: 0; transform: translateX(12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOutRight {
+  from { transform: translateX(0); opacity: 1; }
+  to   { transform: translateX(100%); opacity: 0; }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+@keyframes streamText {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scoreReveal {
+  from { stroke-dashoffset: 314; }
+}
+
+@keyframes barFill {
+  from { width: 0%; }
+}
+
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes orbPulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50%       { transform: scale(1.15); opacity: 1; }
+}
+
+@keyframes ringExpand {
+  0%   { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+@keyframes toastSlideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes toastSlideOut {
+  from { transform: translateX(0); opacity: 1; }
+  to   { transform: translateX(calc(100% + 16px)); opacity: 0; }
+}
+
+@keyframes progressBar {
+  0%   { width: 0%; }
+  80%  { width: 85%; }
+  100% { width: 100%; }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(124,58,237,0.2); }
+  50%       { box-shadow: 0 0 40px rgba(124,58,237,0.5), 0 0 80px rgba(124,58,237,0.2); }
+}
+
+@keyframes textGlow {
+  0%, 100% { text-shadow: 0 0 20px rgba(167,139,250,0.4); }
+  50%       { text-shadow: 0 0 40px rgba(167,139,250,0.8); }
+}
+
+@keyframes insightSlide {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes healthFill {
+  from { width: 0%; }
+}
+
+/* ── Animation Utility Classes ── */
+.animate-fade-up {
+  animation: fadeUp 0.6s ease both;
+}
+.animate-fade-in {
+  animation: fadeIn 0.5s ease both;
+}
+.animate-scale-in {
+  animation: scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.35s; }
+.delay-4 { animation-delay: 0.5s; }
+.delay-5 { animation-delay: 0.65s; }
+
+/* ── Streaming Text Cursor ── */
+.streaming-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--color-violet-light);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: blink 0.8s step-end infinite;
+}
+
+/* ── Shimmer Skeleton ── */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.1)  50%,
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--r-md);
+}
+.shimmer-line {
+  height: 12px;
+  margin-bottom: 8px;
+  border-radius: var(--r-full);
+}
+.shimmer-line--wide { width: 80%; }
+.shimmer-line--mid  { width: 60%; }
+.shimmer-line--short{ width: 40%; }
+
+/* ── Live Pulse ── */
+.live-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-emerald);
+}
+.live-dot {
+  width: 6px; height: 6px;
+  background: var(--color-emerald);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--color-emerald);
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+/* ── AI Overlay ── */
+.ai-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: rgba(7,7,18,0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+.ai-overlay.hidden { display: none; }
+.ai-overlay-inner { text-align: center; }
+.ai-thinking-animation {
+  position: relative;
+  width: 100px; height: 100px;
+  margin: 0 auto var(--sp-6);
+}
+.ai-orb {
+  position: absolute;
+  inset: 25%;
+  background: var(--grad-primary);
+  border-radius: 50%;
+  animation: orbPulse 1.5s ease-in-out infinite;
+  box-shadow: var(--shadow-glow);
+}
+.ai-rings { position: absolute; inset: 0; }
+.ai-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px solid rgba(124,58,237,0.4);
+  animation: ringExpand 2s ease-out infinite;
+}
+.ai-ring--1 { inset: 25%; animation-delay: 0s; }
+.ai-ring--2 { inset: 15%; animation-delay: 0.5s; }
+.ai-ring--3 { inset: 5%; animation-delay: 1s; }
+
+.ai-thinking-text {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--sp-4);
+  animation: textGlow 2s ease-in-out infinite;
+}
+.ai-progress-bar {
+  width: 260px;
+  height: 3px;
+  background: rgba(255,255,255,0.08);
+  border-radius: var(--r-full);
+  overflow: hidden;
+  margin: 0 auto;
+}
+.ai-progress-fill {
+  height: 100%;
+  background: var(--grad-primary);
+  border-radius: var(--r-full);
+  animation: progressBar 3s ease forwards;
+}
+
+/* ── Toast System ── */
+.toast-container {
+  position: fixed;
+  bottom: var(--sp-6);
+  right: var(--sp-6);
+  z-index: var(--z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  pointer-events: none;
+  max-width: 360px;
+}
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--r-lg);
+  padding: var(--sp-4);
+  pointer-events: all;
+  animation: toastSlideIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: var(--shadow-lg);
+}
+.toast.toast--exit { animation: toastSlideOut 0.25s ease forwards; }
+.toast-icon { font-size: 18px; flex-shrink: 0; }
+.toast-body { flex: 1; }
+.toast-title {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+.toast-msg { font-size: var(--fs-xs); color: var(--text-muted); line-height: 1.5; }
+.toast-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: var(--fs-md);
+  padding: 0;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.toast--success { border-left: 3px solid var(--color-emerald); }
+.toast--error   { border-left: 3px solid var(--color-rose); }
+.toast--info    { border-left: 3px solid var(--color-cyan); }
+.toast--warning { border-left: 3px solid var(--color-amber); }
+
+/* ── Score SVG gradient definition ── */
+svg defs { position: absolute; }
+
+/* ── Hover transitions ── */
+.feature-card, .dash-card, .result-card, .fb-card {
+  transition: transform var(--transition-slow), box-shadow var(--transition-slow), border-color var(--transition-slow);
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    transform: translateX(-100%);
+    z-index: var(--z-overlay);
+  }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-close-btn { display: block; }
+  .mobile-menu-btn { display: flex; }
+  .hero-floaters { display: none; }
+  .nav-links { display: none; }
+  .features-grid { grid-template-columns: 1fr; }
+  .module-view { padding: var(--sp-4); }
+}
+
+@media (max-width: 600px) {
+  .hero { padding: 80px var(--sp-4) var(--sp-10); }
+  .demo-input-row { flex-direction: column; }
+  .ship-score-result { flex-direction: column; align-items: flex-start; }
+  .hero-stats { gap: var(--sp-4); }
+  .landing-nav { padding: var(--sp-3) var(--sp-4); }
+}

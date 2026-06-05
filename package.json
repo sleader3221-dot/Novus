@@ -1,0 +1,17 @@
+{
+  "name": "shipsense",
+  "version": "1.0.0",
+  "description": "ShipSense — AI-Native Product Intelligence Studio. World Product Day 2026 Hackathon.",
+  "private": true,
+  "scripts": {
+    "dev": "npx serve . --listen 3000",
+    "start": "npx serve . --listen 3000",
+    "preview": "npx serve . --listen 4000"
+  },
+  "keywords": ["product-management", "ai", "prd", "hackathon", "shipsense"],
+  "author": "ShipSense Team",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.1"
+  }
+}

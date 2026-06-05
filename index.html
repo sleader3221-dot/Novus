@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="ShipSense — The AI-Native Product Intelligence Studio. From fuzzy idea to shipped product in one session. Validate ideas, generate PRDs, build personas, prioritize features, and launch with confidence." />
+  <meta name="keywords" content="product management, AI, PRD generator, feature prioritization, product roadmap, idea validation, ship score" />
+  <meta property="og:title" content="ShipSense — AI Product Intelligence Studio" />
+  <meta property="og:description" content="Your entire product brain. One tab." />
+  <meta property="og:type" content="website" />
+  <title>ShipSense — AI Product Intelligence Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/design-system.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/modules.css" />
+</head>
+<body>
+  <!-- Particle Canvas Background -->
+  <canvas id="particle-canvas" aria-hidden="true"></canvas>
+
+  <!-- Aurora Background -->
+  <div class="aurora-bg" aria-hidden="true">
+    <div class="aurora-orb aurora-orb--1"></div>
+    <div class="aurora-orb aurora-orb--2"></div>
+    <div class="aurora-orb aurora-orb--3"></div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- LANDING PAGE -->
+  <!-- ============================================================ -->
+  <div id="landing-page" class="page-landing active">
+
+    <!-- Nav -->
+    <nav class="landing-nav glass" id="main-nav">
+      <div class="nav-brand">
+        <div class="brand-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 2L24 7.5V14C24 19.523 19.523 24.523 14 26C8.477 24.523 4 19.523 4 14V7.5L14 2Z" fill="url(#brandGrad)" stroke="rgba(124,58,237,0.5)" stroke-width="1"/>
+            <path d="M10 14L13 17L18 11" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="brandGrad" x1="4" y1="2" x2="24" y2="26" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#7c3aed"/>
+                <stop offset="100%" stop-color="#06b6d4"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <span class="brand-name">ShipSense</span>
+        <span class="brand-badge">BETA</span>
+      </div>
+      <div class="nav-links">
+        <a href="#features-section" class="nav-link" id="nav-features">Features</a>
+        <a href="#modules-section" class="nav-link" id="nav-modules">Modules</a>
+        <a href="#" class="nav-link" id="nav-demo-link">Demo</a>
+      </div>
+      <button class="btn btn--primary btn--sm" id="nav-launch-btn">
+        <span>Launch App</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero-section">
+      <div class="hero-content">
+        <div class="hero-badge animate-fade-up">
+          <span class="badge-dot"></span>
+          <span>Built for World Product Day 2026</span>
+        </div>
+
+        <h1 class="hero-headline animate-fade-up delay-1">
+          Your entire product<br/>
+          <span class="gradient-text">brain.</span>
+          <span class="gradient-text-2">One tab.</span>
+        </h1>
+
+        <p class="hero-subline animate-fade-up delay-2">
+          From fuzzy idea to shipped feature — validate, design, prioritize, and launch
+          with an AI co-pilot that never loses context. No more 10-tab chaos.
+        </p>
+
+        <!-- Live Ship Score Demo -->
+        <div class="hero-demo animate-fade-up delay-3" id="hero-demo">
+          <div class="demo-label">
+            <div class="pulse-dot"></div>
+            <span>Live Ship Score™ Demo</span>
+          </div>
+          <div class="demo-input-row">
+            <input
+              type="text"
+              id="hero-idea-input"
+              class="demo-input"
+              placeholder="Describe your product idea..."
+              value="An AI tool that helps PMs write PRDs from customer interviews"
+              maxlength="200"
+            />
+            <button class="btn btn--primary btn--glow" id="hero-score-btn">
+              <span id="hero-score-btn-text">Score It</span>
+              <div class="btn-spinner hidden" id="hero-spinner"></div>
+            </button>
+          </div>
+          <div class="ship-score-result" id="hero-ship-score" aria-live="polite">
+            <div class="score-ring-container">
+              <svg class="score-ring" viewBox="0 0 120 120" width="120" height="120">
+                <circle class="score-ring-track" cx="60" cy="60" r="50" />
+                <circle class="score-ring-progress" cx="60" cy="60" r="50" id="hero-score-ring" />
+              </svg>
+              <div class="score-center">
+                <span class="score-value" id="hero-score-value">--</span>
+                <span class="score-label">Ship Score™</span>
+              </div>
+            </div>
+            <div class="score-breakdown" id="hero-score-breakdown">
+              <div class="score-dim">
+                <span class="dim-label">Market</span>
+                <div class="dim-bar"><div class="dim-fill" id="dim-market" style="width:0%"></div></div>
+                <span class="dim-val" id="dim-market-val">--</span>
+              </div>
+              <div class="score-dim">
+                <span class="dim-label">Novelty</span>
+                <div class="dim-bar"><div class="dim-fill" id="dim-novelty" style="width:0%"></div></div>
+                <span class="dim-val" id="dim-novelty-val">--</span>
+              </div>
+              <div class="score-dim">
+                <span class="dim-label">Viability</span>
+                <div class="dim-bar"><div class="dim-fill" id="dim-viability" style="width:0%"></div></div>
+                <span class="dim-val" id="dim-viability-val">--</span>
+              </div>
+              <div class="score-dim">
+                <span class="dim-label">Timing</span>
+                <div class="dim-bar"><div class="dim-fill" id="dim-timing" style="width:0%"></div></div>
+                <span class="dim-val" id="dim-timing-val">--</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-cta animate-fade-up delay-4">
+          <button class="btn btn--primary btn--lg btn--glow" id="hero-launch-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            Open Studio — Free
+          </button>
+          <span class="cta-note">No sign-up required · Works instantly</span>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="hero-stats animate-fade-up delay-4">
+          <div class="stat-item">
+            <span class="stat-num">30+</span>
+            <span class="stat-desc">AI Features</span>
+          </div>
+          <div class="stat-div"></div>
+          <div class="stat-item">
+            <span class="stat-num">7</span>
+            <span class="stat-desc">PM Modules</span>
+          </div>
+          <div class="stat-div"></div>
+          <div class="stat-item">
+            <span class="stat-num">∞</span>
+            <span class="stat-desc">Ideas to Ship</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating module previews -->
+      <div class="hero-floaters" aria-hidden="true">
+        <div class="floater floater--1 glass">
+          <div class="floater-icon">🚀</div>
+          <div class="floater-text">
+            <span class="f-title">IdeaForge</span>
+            <span class="f-sub">Validate in 30s</span>
+          </div>
+        </div>
+        <div class="floater floater--2 glass">
+          <div class="floater-icon">📄</div>
+          <div class="floater-text">
+            <span class="f-title">PRD Architect</span>
+            <span class="f-sub">1-click PRDs</span>
+          </div>
+        </div>
+        <div class="floater floater--3 glass">
+          <div class="floater-icon">🎯</div>
+          <div class="floater-text">
+            <span class="f-title">PriorityMatrix</span>
+            <span class="f-sub">RICE Scoring</span>
+          </div>
+        </div>
+        <div class="floater floater--4 glass">
+          <div class="floater-icon">💬</div>
+          <div class="floater-text">
+            <span class="f-title">FeedbackFusion</span>
+            <span class="f-sub">Cluster insights</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Strip -->
+    <section class="features-strip" id="features-section">
+      <div class="section-container">
+        <div class="section-header">
+          <div class="section-tag">The Full PM Stack</div>
+          <h2 class="section-title">Every tool a product person needs,<br/><span class="gradient-text">unified with AI</span></h2>
+          <p class="section-subtitle">Stop context-switching between 10 different apps. ShipSense is the command center where great products are born.</p>
+        </div>
+        <div class="features-grid" id="features-section">
+          <div class="feature-card glass" data-module="ideaforge">
+            <div class="feat-icon-wrap" style="--ic:#7c3aed">🚀</div>
+            <h3 class="feat-title">IdeaForge</h3>
+            <p class="feat-desc">AI Ship Score™, market sizing, devil's advocate analysis, and competitor radar — validate any idea in under 30 seconds.</p>
+            <ul class="feat-list">
+              <li>Ship Score™ (0–100 confidence)</li>
+              <li>Market Pulse Analyzer</li>
+              <li>Devil's Advocate AI</li>
+              <li>Competitor Radar</li>
+              <li>Pain Point Validator</li>
+            </ul>
+          </div>
+          <div class="feature-card glass" data-module="prd-architect">
+            <div class="feat-icon-wrap" style="--ic:#06b6d4">📄</div>
+            <h3 class="feat-title">PRD Architect</h3>
+            <p class="feat-desc">Generate full PRDs, user stories, and acceptance criteria from a single sentence. Live health scores and version diffs.</p>
+            <ul class="feat-list">
+              <li>One-Click PRD Generator</li>
+              <li>User Story Factory</li>
+              <li>Acceptance Criteria Builder</li>
+              <li>PRD Health Score</li>
+              <li>Version Timeline</li>
+            </ul>
+          </div>
+          <div class="feature-card glass" data-module="persona-lab">
+            <div class="feat-icon-wrap" style="--ic:#10b981">👥</div>
+            <h3 class="feat-title">Persona Lab</h3>
+            <p class="feat-desc">Build rich user personas with JTBD canvases, empathy maps, and behavioral predictions — know your users deeply.</p>
+            <ul class="feat-list">
+              <li>AI Persona Generator</li>
+              <li>Jobs-to-be-Done Canvas</li>
+              <li>Empathy Map Builder</li>
+              <li>Persona Conflict Analyzer</li>
+              <li>Behavioral Predictor</li>
+            </ul>
+          </div>
+          <div class="feature-card glass" data-module="priority-matrix">
+            <div class="feat-icon-wrap" style="--ic:#f59e0b">🎯</div>
+            <h3 class="feat-title">PriorityMatrix</h3>
+            <p class="feat-desc">Dynamic RICE scoring, MoSCoW classification, dependency mapping, and Monte Carlo sprint simulation.</p>
+            <ul class="feat-list">
+              <li>Dynamic RICE Scorer</li>
+              <li>MoSCoW Classifier</li>
+              <li>Effort Estimator AI</li>
+              <li>Dependency Web Mapper</li>
+              <li>Sprint Velocity Simulator</li>
+            </ul>
+          </div>
+          <div class="feature-card glass" data-module="feedback-fusion">
+            <div class="feat-icon-wrap" style="--ic:#ec4899">💬</div>
+            <h3 class="feat-title">FeedbackFusion</h3>
+            <p class="feat-desc">Paste 50 customer comments and get clustered themes, sentiment trajectories, and ranked feature requests instantly.</p>
+            <ul class="feat-list">
+              <li>Feedback Cluster AI</li>
+              <li>Sentiment Trajectory</li>
+              <li>Feature Request Ranker</li>
+              <li>NPS Signal Decoder</li>
+              <li>Competitive Intel Digester</li>
+            </ul>
+          </div>
+          <div class="feature-card glass" data-module="launch-control">
+            <div class="feat-icon-wrap" style="--ic:#8b5cf6">🛸</div>
+            <h3 class="feat-title">LaunchControl</h3>
+            <p class="feat-desc">GTM canvas, changelog AI, success metric planner, stakeholder briefs, and ship readiness checklist — launch like a pro.</p>
+            <ul class="feat-list">
+              <li>Go-to-Market Canvas</li>
+              <li>Changelog AI Writer</li>
+              <li>Success Metric Planner</li>
+              <li>Stakeholder Brief Generator</li>
+              <li>Ship Readiness Checklist</li>
+            </ul>
+          </div>
+        </div>
+        <div class="cta-center">
+          <button class="btn btn--primary btn--lg btn--glow" id="features-launch-btn">
+            Try All Features Free
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="landing-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <span class="brand-name">ShipSense</span>
+          <span class="footer-tag">Built for World Product Day 2026 Hackathon</span>
+        </div>
+        <div class="footer-badges">
+          <span class="badge-pill">Mind the Product</span>
+          <span class="badge-pill">Novus.ai Integrated</span>
+          <span class="badge-pill">Everyone Ships Now</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- APP SHELL (Shown after "Launch") -->
+  <!-- ============================================================ -->
+  <div id="app-shell" class="page-app hidden">
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar glass" id="sidebar" role="navigation" aria-label="Module navigation">
+      <div class="sidebar-brand">
+        <div class="brand-icon brand-icon--sm">
+          <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
+            <path d="M14 2L24 7.5V14C24 19.523 19.523 24.523 14 26C8.477 24.523 4 19.523 4 14V7.5L14 2Z" fill="url(#brandGrad2)" stroke="rgba(124,58,237,0.5)" stroke-width="1"/>
+            <path d="M10 14L13 17L18 11" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="brandGrad2" x1="4" y1="2" x2="24" y2="26" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#7c3aed"/>
+                <stop offset="100%" stop-color="#06b6d4"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <span class="brand-name">ShipSense</span>
+        <button class="sidebar-close-btn" id="sidebar-close-btn" aria-label="Close sidebar">✕</button>
+      </div>
+
+      <nav class="sidebar-nav" role="menubar">
+        <div class="sidebar-section-label">Workspace</div>
+        <button class="sidebar-item active" data-module="dashboard" role="menuitem" id="nav-dashboard">
+          <span class="sidebar-item-icon">⚡</span>
+          <span class="sidebar-item-label">Command Center</span>
+          <span class="sidebar-item-badge" id="badge-dashboard"></span>
+        </button>
+
+        <div class="sidebar-section-label">Discovery</div>
+        <button class="sidebar-item" data-module="ideaforge" role="menuitem" id="nav-ideaforge">
+          <span class="sidebar-item-icon">🚀</span>
+          <span class="sidebar-item-label">IdeaForge</span>
+          <span class="sidebar-item-sub">Validate ideas</span>
+        </button>
+        <button class="sidebar-item" data-module="persona-lab" role="menuitem" id="nav-persona-lab">
+          <span class="sidebar-item-icon">👥</span>
+          <span class="sidebar-item-label">Persona Lab</span>
+          <span class="sidebar-item-sub">Know your users</span>
+        </button>
+        <button class="sidebar-item" data-module="feedback-fusion" role="menuitem" id="nav-feedback-fusion">
+          <span class="sidebar-item-icon">💬</span>
+          <span class="sidebar-item-label">FeedbackFusion</span>
+          <span class="sidebar-item-sub">Cluster insights</span>
+        </button>
+
+        <div class="sidebar-section-label">Planning</div>
+        <button class="sidebar-item" data-module="prd-architect" role="menuitem" id="nav-prd-architect">
+          <span class="sidebar-item-icon">📄</span>
+          <span class="sidebar-item-label">PRD Architect</span>
+          <span class="sidebar-item-sub">Generate docs</span>
+        </button>
+        <button class="sidebar-item" data-module="priority-matrix" role="menuitem" id="nav-priority-matrix">
+          <span class="sidebar-item-icon">🎯</span>
+          <span class="sidebar-item-label">PriorityMatrix</span>
+          <span class="sidebar-item-sub">Score & rank</span>
+        </button>
+
+        <div class="sidebar-section-label">Launch</div>
+        <button class="sidebar-item" data-module="launch-control" role="menuitem" id="nav-launch-control">
+          <span class="sidebar-item-icon">🛸</span>
+          <span class="sidebar-item-label">LaunchControl</span>
+          <span class="sidebar-item-sub">Ship with confidence</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-ai-status">
+          <div class="ai-status-dot"></div>
+          <span>AI Engine Active</span>
+        </div>
+        <button class="btn btn--ghost btn--sm" id="back-to-landing-btn">← Back to Home</button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content" id="main-content" role="main">
+
+      <!-- Top Bar -->
+      <header class="topbar glass" id="topbar">
+        <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open sidebar">
+          <span></span><span></span><span></span>
+        </button>
+        <div class="topbar-breadcrumb" id="topbar-breadcrumb">
+          <span>ShipSense</span>
+          <span class="breadcrumb-sep">›</span>
+          <span id="breadcrumb-current">Command Center</span>
+        </div>
+        <div class="topbar-actions">
+          <div class="topbar-score-pill" id="topbar-score-pill">
+            <span class="pill-label">Session Score</span>
+            <span class="pill-value" id="topbar-score">0</span>
+          </div>
+          <button class="btn btn--ghost btn--icon" id="topbar-notifications-btn" aria-label="Notifications">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="notification-dot hidden" id="notification-dot"></span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Module Views -->
+      <div class="module-container" id="module-container">
+
+        <!-- ── DASHBOARD ── -->
+        <section class="module-view active" id="module-dashboard" data-module="dashboard">
+          <div class="module-header">
+            <div class="module-title-row">
+              <h1 class="module-title">⚡ Command Center</h1>
+              <span class="module-subtitle">Your real-time product intelligence hub</span>
+            </div>
+          </div>
+
+          <div class="dashboard-grid">
+            <!-- Health Score Card -->
+            <div class="dash-card dash-card--wide glass">
+              <div class="dash-card-header">
+                <h3>Product Health Monitor</h3>
+                <div class="live-badge"><span class="live-dot"></span>Live</div>
+              </div>
+              <div class="health-bars" id="health-bars">
+                <div class="health-bar-row">
+                  <span class="hb-label">Idea Strength</span>
+                  <div class="hb-track"><div class="hb-fill hb-violet" id="hb-idea" style="width:0%"></div></div>
+                  <span class="hb-val" id="hb-idea-val">—</span>
+                </div>
+                <div class="health-bar-row">
+                  <span class="hb-label">PRD Quality</span>
+                  <div class="hb-track"><div class="hb-fill hb-cyan" id="hb-prd" style="width:0%"></div></div>
+                  <span class="hb-val" id="hb-prd-val">—</span>
+                </div>
+                <div class="health-bar-row">
+                  <span class="hb-label">User Understanding</span>
+                  <div class="hb-track"><div class="hb-fill hb-emerald" id="hb-user" style="width:0%"></div></div>
+                  <span class="hb-val" id="hb-user-val">—</span>
+                </div>
+                <div class="health-bar-row">
+                  <span class="hb-label">Launch Readiness</span>
+                  <div class="hb-track"><div class="hb-fill hb-amber" id="hb-launch" style="width:0%"></div></div>
+                  <span class="hb-val" id="hb-launch-val">—</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Actions Card -->
+            <div class="dash-card glass">
+              <div class="dash-card-header"><h3>Quick Actions</h3></div>
+              <div class="quick-actions">
+                <button class="qa-btn" data-module="ideaforge">
+                  <span>🚀</span> Validate Idea
+                </button>
+                <button class="qa-btn" data-module="prd-architect">
+                  <span>📄</span> Generate PRD
+                </button>
+                <button class="qa-btn" data-module="persona-lab">
+                  <span>👥</span> Build Persona
+                </button>
+                <button class="qa-btn" data-module="priority-matrix">
+                  <span>🎯</span> Score Features
+                </button>
+                <button class="qa-btn" data-module="feedback-fusion">
+                  <span>💬</span> Cluster Feedback
+                </button>
+                <button class="qa-btn" data-module="launch-control">
+                  <span>🛸</span> Plan Launch
+                </button>
+              </div>
+            </div>
+
+            <!-- AI Insight Feed Card -->
+            <div class="dash-card dash-card--tall glass">
+              <div class="dash-card-header">
+                <h3>AI Insight Feed</h3>
+                <div class="live-badge"><span class="live-dot"></span>Live</div>
+              </div>
+              <div class="insight-feed" id="insight-feed">
+                <div class="insight-placeholder">
+                  <div class="insight-icon">🤖</div>
+                  <p>Your AI co-pilot is ready. Start using any module to get proactive insights here.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Activity Card -->
+            <div class="dash-card glass">
+              <div class="dash-card-header"><h3>Session Activity</h3></div>
+              <div class="activity-feed" id="activity-feed">
+                <div class="activity-empty">No activity yet. Start with IdeaForge →</div>
+              </div>
+            </div>
+
+            <!-- Ship Score Card -->
+            <div class="dash-card glass">
+              <div class="dash-card-header"><h3>Ship Score™ History</h3></div>
+              <div class="score-history" id="score-history">
+                <div class="score-history-empty">Score your ideas in IdeaForge to track them here.</div>
+              </div>
+            </div>
+
+            <!-- Module Status Card -->
+            <div class="dash-card glass">
+              <div class="dash-card-header"><h3>Module Progress</h3></div>
+              <div class="module-status-grid" id="module-status-grid">
+                <div class="ms-item" data-module="ideaforge">
+                  <span class="ms-icon">🚀</span>
+                  <span class="ms-name">IdeaForge</span>
+                  <span class="ms-status ms-status--idle">Not started</span>
+                </div>
+                <div class="ms-item" data-module="prd-architect">
+                  <span class="ms-icon">📄</span>
+                  <span class="ms-name">PRD Architect</span>
+                  <span class="ms-status ms-status--idle">Not started</span>
+                </div>
+                <div class="ms-item" data-module="persona-lab">
+                  <span class="ms-icon">👥</span>
+                  <span class="ms-name">Persona Lab</span>
+                  <span class="ms-status ms-status--idle">Not started</span>
+                </div>
+                <div class="ms-item" data-module="priority-matrix">
+                  <span class="ms-icon">🎯</span>
+                  <span class="ms-name">PriorityMatrix</span>
+                  <span class="ms-status ms-status--idle">Not started</span>
+                </div>
+                <div class="ms-item" data-module="feedback-fusion">
+                  <span class="ms-icon">💬</span>
+                  <span class="ms-name">FeedbackFusion</span>
+                  <span class="ms-status ms-status--idle">Not started</span>
+                </div>
+                <div class="ms-item" data-module="launch-control">
+                  <span class="ms-icon">🛸</span>
+                  <span class="ms-name">LaunchControl</span>
+                  <span class="ms-status ms-status--idle">Not started</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── IDEAFORGE ── -->
+        <section class="module-view" id="module-ideaforge" data-module="ideaforge">
+          <div class="module-header">
+            <div class="module-title-row">
+              <h1 class="module-title">🚀 IdeaForge</h1>
+              <span class="module-subtitle">Validate any product idea in 30 seconds</span>
+            </div>
+          </div>
+
+          <div class="module-body">
+            <!-- Input Panel -->
+            <div class="input-panel glass">
+              <label class="input-label" for="idea-input">Your Product Idea</label>
+              <textarea
+                id="idea-input"
+                class="module-textarea"
+                placeholder="Describe your product idea in a sentence or two... e.g., 'A mobile app that helps remote teams do async standups with AI-generated summaries'"
+                rows="3"
+                maxlength="500"
+              ></textarea>
+              <div class="input-actions">
+                <span class="char-count" id="idea-char-count">0/500</span>
+                <div class="action-btns">
+                  <button class="btn btn--ghost btn--sm" id="idea-random-btn">✨ Random idea</button>
+                  <button class="btn btn--primary" id="idea-analyze-btn">
+                    <span id="idea-btn-text">Analyze Idea</span>
+                    <div class="btn-spinner hidden" id="idea-spinner"></div>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Results Grid -->
+            <div class="results-grid" id="idea-results" style="display:none">
+
+              <!-- Ship Score -->
+              <div class="result-card result-card--featured glass" id="idea-ship-score-card">
+                <h3 class="rc-title">Ship Score™</h3>
+                <div class="ship-score-display">
+                  <div class="big-score-ring">
+                    <svg viewBox="0 0 160 160" width="160" height="160" style="transform:rotate(-90deg)">
+                      <circle class="score-ring-track" cx="80" cy="80" r="68" />
+                      <circle class="score-ring-progress" cx="80" cy="80" r="68" id="idea-score-ring" />
+                    </svg>
+                    <div class="big-score-center">
+                      <span class="big-score-value" id="idea-score-value">0</span>
+                      <span class="big-score-label">/ 100</span>
+                    </div>
+                  </div>
+                  <div class="score-verdict" id="idea-verdict"></div>
+                  <div class="score-dims-grid">
+                    <div class="sdg-item">
+                      <div class="sdg-bar-wrap">
+                        <div class="sdg-fill sdg-violet" id="sdg-market"></div>
+                      </div>
+                      <span>Market</span>
+                      <strong id="sdg-market-v">0</strong>
+                    </div>
+                    <div class="sdg-item">
+                      <div class="sdg-bar-wrap">
+                        <div class="sdg-fill sdg-cyan" id="sdg-novelty"></div>
+                      </div>
+                      <span>Novelty</span>
+                      <strong id="sdg-novelty-v">0</strong>
+                    </div>
+                    <div class="sdg-item">
+                      <div class="sdg-bar-wrap">
+                        <div class="sdg-fill sdg-emerald" id="sdg-viability"></div>
+                      </div>
+                      <span>Viability</span>
+                      <strong id="sdg-viability-v">0</strong>
+                    </div>
+                    <div class="sdg-item">
+                      <div class="sdg-bar-wrap">
+                        <div class="sdg-fill sdg-amber" id="sdg-timing"></div>
+                      </div>
+                      <span>Timing</span>
+                      <strong id="sdg-timing-v">0</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Market Pulse -->
+              <div class="result-card glass" id="idea-market-card">
+                <h3 class="rc-title">📊 Market Pulse</h3>
+                <div class="market-content" id="idea-market-content"></div>
+              </div>
+
+              <!-- Devil's Advocate -->
+              <div class="result-card glass" id="idea-devil-card">
+                <h3 class="rc-title">😈 Devil's Advocate</h3>
+                <div class="devil-content" id="idea-devil-content"></div>
+              </div>
+
+              <!-- Competitor Radar -->
+              <div class="result-card glass" id="idea-comp-card">
+                <h3 class="rc-title">🔭 Competitor Radar</h3>
+                <div class="competitor-content" id="idea-comp-content"></div>
+              </div>
+
+              <!-- Pain Point Validator -->
+              <div class="result-card glass" id="idea-pain-card">
+                <h3 class="rc-title">💡 Pain Point Validator</h3>
+                <div class="pain-content" id="idea-pain-content"></div>
+              </div>
+
+              <!-- CTA to next module -->
+              <div class="result-card result-card--cta glass">
+                <div class="cta-card-inner">
+                  <h3>Ready to write the PRD?</h3>
+                  <p>Your idea looks solid. Take it to PRD Architect and generate a complete spec in one click.</p>
+                  <button class="btn btn--primary" id="idea-to-prd-btn">
+                    Open PRD Architect →
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── PRD ARCHITECT ── -->
+        <section class="module-view" id="module-prd-architect" data-module="prd-architect">
+          <div class="module-header">
+            <div class="module-title-row">
+              <h1 class="module-title">📄 PRD Architect</h1>
+              <span class="module-subtitle">From one sentence to a complete Product Requirements Document</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <div class="prd-layout">
+              <div class="prd-input-panel glass">
+                <label class="input-label" for="prd-idea-input">Product Feature / Idea</label>
+                <textarea id="prd-idea-input" class="module-textarea" placeholder="Describe the feature or product you want to spec out..." rows="3"></textarea>
+                <div class="prd-options">
+                  <div class="option-group">
+                    <label class="option-label">Document Type</label>
+                    <div class="pill-group" id="prd-type-group">
+                      <button class="pill active" data-val="full-prd" id="prd-type-full">Full PRD</button>
+                      <button class="pill" data-val="user-stories" id="prd-type-stories">User Stories</button>
+                      <button class="pill" data-val="ac-only" id="prd-type-ac">Acceptance Criteria</button>
+                    </div>
+                  </div>
+                  <div class="option-group">
+                    <label class="option-label">Audience</label>
+                    <div class="pill-group" id="prd-audience-group">
+                      <button class="pill active" data-val="engineering" id="prd-aud-eng">Engineering</button>
+                      <button class="pill" data-val="stakeholders" id="prd-aud-stake">Stakeholders</button>
+                      <button class="pill" data-val="design" id="prd-aud-design">Design</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="input-actions">
+                  <button class="btn btn--ghost btn--sm" id="prd-health-btn">Check PRD Health</button>
+                  <button class="btn btn--primary" id="prd-generate-btn">
+                    <span id="prd-btn-text">Generate PRD</span>
+                    <div class="btn-spinner hidden" id="prd-spinner"></div>
+                  </button>
+                </div>
+
+                <!-- PRD Health Score -->
+                <div class="prd-health-panel" id="prd-health-panel" style="display:none">
+                  <div class="health-score-display">
+                    <div class="health-score-circle" id="prd-health-circle">
+                      <span id="prd-health-score">0</span>
+                    </div>
+                    <div class="health-details">
+                      <h4>PRD Health Score</h4>
+                      <div class="health-checks" id="prd-health-checks"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="prd-output-panel glass">
+                <div class="prd-output-header">
+                  <span class="prd-output-title" id="prd-output-label">PRD Output</span>
+                  <div class="prd-toolbar">
+                    <button class="tool-btn" id="prd-copy-btn" title="Copy to clipboard">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                      Copy
+                    </button>
+                    <button class="tool-btn" id="prd-download-btn" title="Download as markdown">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                      Download
+                    </button>
+                  </div>
+                </div>
+                <div class="prd-content-area" id="prd-content-area">
+                  <div class="prd-placeholder">
+                    <div class="placeholder-icon">📄</div>
+                    <p>Enter your feature description and click "Generate PRD" to create a complete product spec.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Version Timeline -->
+            <div class="version-timeline glass hidden" id="prd-version-timeline">
+              <h3 class="vt-title">Version History</h3>
+              <div class="timeline-items" id="prd-timeline-items"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── PERSONA LAB ── -->
+        <section class="module-view" id="module-persona-lab" data-module="persona-lab">
+          <div class="module-header">
+            <div class="module-title-row">
+              <h1 class="module-title">👥 Persona Lab</h1>
+              <span class="module-subtitle">Deep user intelligence with AI-powered personas</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <div class="persona-input-row">
+              <div class="input-panel glass" style="flex:1">
+                <label class="input-label" for="persona-segment-input">Target User Segment</label>
+                <input type="text" id="persona-segment-input" class="module-input" placeholder="e.g., 'Senior product managers at B2B SaaS startups'" />
+                <div class="input-actions" style="margin-top:12px">
+                  <button class="btn btn--ghost btn--sm" id="persona-random-btn">✨ Suggest segment</button>
+                  <button class="btn btn--primary" id="persona-generate-btn">
+                    <span id="persona-btn-text">Generate Persona</span>
+                    <div class="btn-spinner hidden" id="persona-spinner"></div>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div id="persona-results" style="display:none">
+              <div class="persona-tabs">
+                <button class="ptab active" data-tab="profile" id="ptab-profile">Profile</button>
+                <button class="ptab" data-tab="jtbd" id="ptab-jtbd">Jobs-to-be-Done</button>
+                <button class="ptab" data-tab="empathy" id="ptab-empathy">Empathy Map</button>
+                <button class="ptab" data-tab="predict" id="ptab-predict">Behavior Predictor</button>
+              </div>
+
+              <!-- Profile Tab -->
+              <div class="ptab-content active" id="ptab-content-profile">
+                <div class="persona-card-layout">
+                  <div class="persona-avatar-card glass">
+                    <div class="persona-avatar" id="persona-avatar"></div>
+                    <h2 class="persona-name" id="persona-name">—</h2>
+                    <p class="persona-role" id="persona-role">—</p>
+                    <div class="persona-tags" id="persona-tags"></div>
+                    <div class="persona-attrs" id="persona-attrs"></div>
+                  </div>
+                  <div class="persona-details-col">
+                    <div class="persona-detail-card glass">
+                      <h4>Goals</h4>
+                      <ul id="persona-goals"></ul>
+                    </div>
+                    <div class="persona-detail-card glass">
+                      <h4>Pain Points</h4>
+                      <ul id="persona-pains"></ul>
+                    </div>
+                    <div class="persona-detail-card glass">
+                      <h4>Motivations</h4>
+                      <ul id="persona-motivations"></ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="conflict-analyzer glass" id="conflict-analyzer">
+                  <h4>⚠️ Persona Conflict Analyzer</h4>
+                  <div id="conflict-content"></div>
+                </div>
+              </div>
+
+              <!-- JTBD Tab -->
+              <div class="ptab-content" id="ptab-content-jtbd">
+                <div class="jtbd-canvas glass" id="jtbd-canvas"></div>
+              </div>
+
+              <!-- Empathy Map Tab -->
+              <div class="ptab-content" id="ptab-content-empathy">
+                <div class="empathy-map" id="empathy-map">
+                  <div class="empathy-center">
+                    <div class="empathy-center-icon">👤</div>
+                    <span id="empathy-name">User</span>
+                  </div>
+                  <div class="empathy-quad eq-think glass">
+                    <h4>🧠 Thinks & Feels</h4>
+                    <ul id="emp-think"></ul>
+                  </div>
+                  <div class="empathy-quad eq-hear glass">
+                    <h4>👂 Hears</h4>
+                    <ul id="emp-hear"></ul>
+                  </div>
+                  <div class="empathy-quad eq-see glass">
+                    <h4>👀 Sees</h4>
+                    <ul id="emp-see"></ul>
+                  </div>
+                  <div class="empathy-quad eq-say glass">
+                    <h4>🗣️ Says & Does</h4>
+                    <ul id="emp-say"></ul>
+                  </div>
+                  <div class="empathy-quad eq-pain glass">
+                    <h4>😤 Pains</h4>
+                    <ul id="emp-pain"></ul>
+                  </div>
+                  <div class="empathy-quad eq-gain glass">
+                    <h4>🌟 Gains</h4>
+                    <ul id="emp-gain"></ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Behavior Predictor Tab -->
+              <div class="ptab-content" id="ptab-content-predict">
+                <div class="behavior-predictor glass" id="behavior-predictor"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── PRIORITY MATRIX ── -->
+        <section class="module-view" id="module-priority-matrix" data-module="priority-matrix">
+          <div class="module-header">
+            <div class="module-title-row">
+              <h1 class="module-title">🎯 PriorityMatrix</h1>
+              <span class="module-subtitle">RICE scoring, MoSCoW, and Monte Carlo sprint simulation</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <!-- Add Feature -->
+            <div class="pm-add-panel glass">
+              <div class="pm-add-row">
+                <input type="text" id="pm-feature-input" class="module-input" placeholder="Add a feature to score (e.g., 'AI-powered search', 'Dark mode', 'Export to CSV')" />
+                <button class="btn btn--primary" id="pm-add-btn">+ Add & Score</button>
+              </div>
+              <div class="pm-quick-add" id="pm-quick-add">
+                <span class="qa-label">Quick add:</span>
+                <button class="qa-chip" id="chip-1">AI-powered search</button>
+                <button class="qa-chip" id="chip-2">Dark mode</button>
+                <button class="qa-chip" id="chip-3">Bulk export</button>
+                <button class="qa-chip" id="chip-4">Mobile app</button>
+                <button class="qa-chip" id="chip-5">Integrations</button>
+              </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="pm-tabs">
+              <button class="pmtab active" data-pmtab="rice" id="pmtab-rice">RICE Scoring</button>
+              <button class="pmtab" data-pmtab="moscow" id="pmtab-moscow">MoSCoW</button>
+              <button class="pmtab" data-pmtab="dependency" id="pmtab-dependency">Dependency Map</button>
+              <button class="pmtab" data-pmtab="sprint" id="pmtab-sprint">Sprint Simulator</button>
+            </div>
+
+            <!-- RICE Tab -->
+            <div class="pmtab-content active" id="pmtab-content-rice">
+              <div id="rice-features-list" class="rice-list">
+                <div class="rice-empty">Add features above to start scoring →</div>
+              </div>
+            </div>
+
+            <!-- MoSCoW Tab -->
+            <div class="pmtab-content" id="pmtab-content-moscow">
+              <div class="moscow-grid">
+                <div class="moscow-col glass" id="moscow-must">
+                  <div class="moscow-header must">
+                    <span>🔴 Must Have</span>
+                    <span class="moscow-count" id="must-count">0</span>
+                  </div>
+                  <div class="moscow-items" id="moscow-must-items"></div>
+                </div>
+                <div class="moscow-col glass" id="moscow-should">
+                  <div class="moscow-header should">
+                    <span>🟡 Should Have</span>
+                    <span class="moscow-count" id="should-count">0</span>
+                  </div>
+                  <div class="moscow-items" id="moscow-should-items"></div>
+                </div>
+                <div class="moscow-col glass" id="moscow-could">
+                  <div class="moscow-header could">
+                    <span>🟢 Could Have</span>
+                    <span class="moscow-count" id="could-count">0</span>
+                  </div>
+                  <div class="moscow-items" id="moscow-could-items"></div>
+                </div>
+                <div class="moscow-col glass" id="moscow-wont">
+                  <div class="moscow-header wont">
+                    <span>⚫ Won't Have</span>
+                    <span class="moscow-count" id="wont-count">0</span>
+                  </div>
+                  <div class="moscow-items" id="moscow-wont-items"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dependency Tab -->
+            <div class="pmtab-content" id="pmtab-content-dependency">
+              <div class="dependency-map glass" id="dependency-map">
+                <div class="dep-empty">Add at least 3 features to see dependency relationships.</div>
+              </div>
+            </div>
+
+            <!-- Sprint Simulator Tab -->
+            <div class="pmtab-content" id="pmtab-content-sprint">
+              <div class="sprint-simulator glass" id="sprint-simulator">
+                <div class="sprint-controls">
+                  <div class="sprint-control-group">
+                    <label>Team Size</label>
+                    <input type="range" id="sprint-team-size" min="1" max="10" value="3" class="range-input" />
+                    <span id="sprint-team-size-val">3 engineers</span>
+                  </div>
+                  <div class="sprint-control-group">
+                    <label>Sprint Length</label>
+                    <input type="range" id="sprint-length" min="1" max="4" value="2" class="range-input" />
+                    <span id="sprint-length-val">2 weeks</span>
+                  </div>
+                  <button class="btn btn--primary" id="sprint-simulate-btn">Run Simulation</button>
+                </div>
+                <div class="sprint-results" id="sprint-results"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── FEEDBACK FUSION ── -->
+        <section class="module-view" id="module-feedback-fusion" data-module="feedback-fusion">
+          <div class="module-header">
+            <div class="module-title-row">
+              <h1 class="module-title">💬 FeedbackFusion</h1>
+              <span class="module-subtitle">Transform raw feedback into actionable product intelligence</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <div class="feedback-input-panel glass">
+              <div class="fb-type-tabs">
+                <button class="fbtab active" data-fbtype="raw" id="fbtab-raw">Raw Feedback</button>
+                <button class="fbtab" data-fbtype="nps" id="fbtab-nps">NPS Verbatims</button>
+                <button class="fbtab" data-fbtype="competitor" id="fbtab-competitor">Competitor Reviews</button>
+              </div>
+              <label class="input-label" for="feedback-input">Paste Customer Feedback</label>
+              <textarea id="feedback-input" class="module-textarea" rows="6" placeholder="Paste customer feedback, support tickets, survey responses, or user interview notes here...&#10;&#10;One piece of feedback per line works best. Try 5–50 items for the best insights."></textarea>
+              <div class="input-actions">
+                <button class="btn btn--ghost btn--sm" id="fb-sample-btn">✨ Load sample feedback</button>
+                <button class="btn btn--primary" id="fb-analyze-btn">
+                  <span id="fb-btn-text">Analyze Feedback</span>
+                  <div class="btn-spinner hidden" id="fb-spinner"></div>
+                </button>
+              </div>
+            </div>
+
+            <div id="feedback-results" style="display:none">
+              <div class="fb-results-grid">
+                <!-- Clusters -->
+                <div class="fb-card fb-card--wide glass">
+                  <h3>🎯 Feedback Clusters</h3>
+                  <div class="clusters-container" id="feedback-clusters"></div>
+                </div>
+
+                <!-- Sentiment -->
+                <div class="fb-card glass">
+                  <h3>📈 Sentiment Analysis</h3>
+                  <div class="sentiment-display" id="sentiment-display"></div>
+                </div>
+
+                <!-- Feature Ranker -->
+                <div class="fb-card glass">
+                  <h3>⭐ Feature Request Ranker</h3>
+                  <div class="feature-ranker" id="feature-ranker"></div>
+                </div>
+
+                <!-- Sentiment Trajectory -->
+                <div class="fb-card fb-card--wide glass">
+                  <h3>📊 Sentiment Trajectory</h3>
+                  <div class="trajectory-chart" id="trajectory-chart"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── LAUNCH CONTROL ── -->
+        <section class="module-view" id="module-launch-control" data-module="launch-control">
+          <div class="module-header">
+            <div class="module-title-row">
+              <h1 class="module-title">🛸 LaunchControl</h1>
+              <span class="module-subtitle">Ship with confidence — GTM, changelog, metrics, and readiness</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <div class="lc-input-panel glass">
+              <label class="input-label" for="lc-product-input">What are you launching?</label>
+              <input type="text" id="lc-product-input" class="module-input" placeholder="e.g., 'AI-powered customer feedback clustering tool for product teams'" />
+              <div class="input-actions" style="margin-top:12px">
+                <button class="btn btn--primary" id="lc-generate-btn">
+                  <span id="lc-btn-text">Generate Launch Plan</span>
+                  <div class="btn-spinner hidden" id="lc-spinner"></div>
+                </button>
+              </div>
+            </div>
+
+            <div id="lc-results" style="display:none">
+              <div class="lc-tabs">
+                <button class="lctab active" data-lctab="gtm" id="lctab-gtm">GTM Canvas</button>
+                <button class="lctab" data-lctab="changelog" id="lctab-changelog">Changelog AI</button>
+                <button class="lctab" data-lctab="metrics" id="lctab-metrics">Success Metrics</button>
+                <button class="lctab" data-lctab="brief" id="lctab-brief">Stakeholder Brief</button>
+                <button class="lctab" data-lctab="checklist" id="lctab-checklist">Ship Checklist</button>
+              </div>
+
+              <div class="lctab-content active glass" id="lctab-content-gtm">
+                <div id="gtm-canvas"></div>
+              </div>
+              <div class="lctab-content glass" id="lctab-content-changelog">
+                <div id="changelog-content"></div>
+              </div>
+              <div class="lctab-content glass" id="lctab-content-metrics">
+                <div id="metrics-content"></div>
+              </div>
+              <div class="lctab-content glass" id="lctab-content-brief">
+                <div id="brief-content"></div>
+              </div>
+              <div class="lctab-content glass" id="lctab-content-checklist">
+                <div id="checklist-content"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div><!-- /module-container -->
+    </main>
+  </div><!-- /app-shell -->
+
+  <!-- Toast Notification System -->
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- AI Thinking Overlay -->
+  <div class="ai-overlay hidden" id="ai-overlay" aria-hidden="true">
+    <div class="ai-overlay-inner">
+      <div class="ai-thinking-animation">
+        <div class="ai-orb"></div>
+        <div class="ai-rings">
+          <div class="ai-ring ai-ring--1"></div>
+          <div class="ai-ring ai-ring--2"></div>
+          <div class="ai-ring ai-ring--3"></div>
+        </div>
+      </div>
+      <p class="ai-thinking-text" id="ai-thinking-text">Analyzing your idea...</p>
+      <div class="ai-progress-bar"><div class="ai-progress-fill" id="ai-progress-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
