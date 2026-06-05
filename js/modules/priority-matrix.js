@@ -23,6 +23,27 @@ export function initPriorityMatrix() {
   featureInput?.addEventListener('keydown', e => {
     if (e.key === 'Enter') addFeature(featureInput.value);
   });
+  
+  // "Load Sample Features" global listener
+  document.body.addEventListener('click', e => {
+    if (e.target.id === 'pm-load-sample-btn') {
+      ['AI-powered search', 'Dark mode', 'Bulk export', 'Mobile app', 'Integrations'].forEach(async (f, i) => {
+        setTimeout(() => addFeature(f), i * 300);
+      });
+    }
+    // "Draft PRD" cross-module listener
+    if (e.target.classList.contains('draft-prd-btn')) {
+      const featName = e.target.dataset.feature;
+      import('../app.js').then(app => {
+        app.navigateToModule('prd-architect');
+        const prdInput = document.getElementById('prd-idea-input');
+        if (prdInput) {
+          prdInput.value = featName;
+          document.getElementById('prd-generate-btn')?.click();
+        }
+      });
+    }
+  });
 
   // Quick-add chips
   document.querySelectorAll('.qa-chip').forEach(chip => {
@@ -48,7 +69,7 @@ export function initPriorityMatrix() {
   simBtn?.addEventListener('click', runSim);
 }
 
-function addFeature(name) {
+async function addFeature(name) {
   if (!name || name.trim().length < 2) return;
   const trimmed = name.trim();
 
@@ -61,8 +82,14 @@ function addFeature(name) {
   const featureInput = document.getElementById('pm-feature-input');
   if (featureInput) featureInput.value = '';
 
-  const scored = scoreFeature(trimmed);
+  const btnText = document.getElementById('pm-add-btn');
+  const originalText = btnText.textContent;
+  btnText.textContent = 'Scoring...';
+  
+  const scored = await scoreFeature(trimmed);
   features.push(scored);
+  
+  btnText.textContent = originalText;
 
   // Sort by RICE score descending
   features.sort((a, b) => b.riceScore - a.riceScore);
@@ -93,7 +120,11 @@ function renderRICEList() {
   if (!list) return;
 
   if (features.length === 0) {
-    list.innerHTML = '<div class="rice-empty">Add features above to start scoring →</div>';
+    list.innerHTML = `
+      <div class="rice-empty">
+        <div style="margin-bottom:12px">Add features above to start scoring →</div>
+        <button class="btn btn--primary btn--glow" id="pm-load-sample-btn">✨ Load Sample Features</button>
+      </div>`;
     return;
   }
 
@@ -229,10 +260,13 @@ function runSim() {
       </div>
       <div class="sprint-items-list">
         ${sprint.items.map(item => `
-          <div class="sprint-item-row">
-            <span class="sprint-item-name">${item.name}</span>
-            <span class="sprint-item-pts">${item.points} pts</span>
-            <span class="rice-effort-badge ${item.effortCls}">${item.effortLabel}</span>
+          <div class="sprint-item-row" style="display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <span class="sprint-item-name">${item.name}</span>
+              <span class="sprint-item-pts">${item.points} pts</span>
+              <span class="rice-effort-badge ${item.effortCls}">${item.effortLabel}</span>
+            </div>
+            <button class="btn btn--ghost btn--sm draft-prd-btn" data-feature="${item.name}">Draft PRD ⚡</button>
           </div>`).join('')}
       </div>
     </div>`).join('');

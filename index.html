@@ -16,6 +16,20 @@
   <link rel="stylesheet" href="css/animations.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/modules.css" />
+  
+  <!-- Novus.ai Telemetry Integration -->
+  <script>
+    window.novus = window.novus || {
+      track: function(event, data) {
+        console.log(`[Novus Telemetry] ${event}`, data);
+        // Fallback for demo purposes. Real init:
+        // novus.init('YOUR_NOVUS_KEY');
+      }
+    };
+  </script>
+
+  <!-- html2pdf.js for PRD Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
   <!-- Particle Canvas Background -->
@@ -403,6 +417,8 @@
           <button class="btn btn--ghost btn--icon" id="topbar-notifications-btn" aria-label="Notifications">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>
             <span class="notification-dot hidden" id="notification-dot"></span>
+          <button class="btn btn--ghost btn--icon" id="topbar-settings-btn" aria-label="Settings">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           </button>
         </div>
       </header>
@@ -979,7 +995,7 @@
               <label class="input-label" for="feedback-input">Paste Customer Feedback</label>
               <textarea id="feedback-input" class="module-textarea" rows="6" placeholder="Paste customer feedback, support tickets, survey responses, or user interview notes here...&#10;&#10;One piece of feedback per line works best. Try 5–50 items for the best insights."></textarea>
               <div class="input-actions">
-                <button class="btn btn--ghost btn--sm" id="fb-sample-btn">✨ Load sample feedback</button>
+                <button class="btn btn--ghost btn--sm btn--glow" id="fb-sample-btn">✨ Load sample feedback</button>
                 <button class="btn btn--primary" id="fb-analyze-btn">
                   <span id="fb-btn-text">Analyze Feedback</span>
                   <div class="btn-spinner hidden" id="fb-spinner"></div>
@@ -1085,6 +1101,20 @@
       </div>
       <p class="ai-thinking-text" id="ai-thinking-text">Analyzing your idea...</p>
       <div class="ai-progress-bar"><div class="ai-progress-fill" id="ai-progress-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- Settings Modal (Hybrid AI) -->
+  <div class="modal-overlay hidden" id="settings-modal" aria-hidden="true" style="position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)">
+    <div class="modal-content glass" style="width:400px;padding:var(--sp-6);border-radius:var(--r-xl);position:relative">
+      <button id="close-settings-btn" style="position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text-muted);cursor:pointer">✕</button>
+      <h2 style="font-family:var(--font-display);font-size:var(--fs-xl);margin-bottom:var(--sp-2)">⚙️ Studio Settings</h2>
+      <p style="font-size:var(--fs-sm);color:var(--text-secondary);margin-bottom:var(--sp-4)">ShipSense uses instant mock data by default. To unlock real AI responses (Hybrid AI), enter your OpenAI API key below.</p>
+      
+      <label class="input-label" for="openai-key-input">OpenAI API Key</label>
+      <input type="password" id="openai-key-input" class="module-input" placeholder="sk-..." style="margin-bottom:var(--sp-4)" />
+      
+      <button class="btn btn--primary" id="save-settings-btn" style="width:100%;justify-content:center">Save Configuration</button>
     </div>
   </div>
 

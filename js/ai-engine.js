@@ -6,6 +6,31 @@
 
 import { hashString, deterministicScore, randomPick, shuffle } from './utils/helpers.js';
 
+// Helper to create artificial delay for UX
+export const thinkDelay = (min = 800, max = 2000) => new Promise(r => setTimeout(r, Math.floor(Math.random() * (max - min)) + min));
+
+// Hybrid AI BYOK Wrapper
+export async function callOpenAI(sysPrompt, userPrompt) {
+  const apiKey = localStorage.getItem('openai_key');
+  if (!apiKey) return null;
+  try {
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [{ role: 'system', content: sysPrompt }, { role: 'user', content: userPrompt }],
+        temperature: 0.7
+      })
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.choices[0].message.content;
+  } catch (e) {
+    return null;
+  }
+}
+
 // ── Stream text character by character ──────────────────────
 export async function streamText(container, text, speedMs = 18) {
   container.innerHTML = '';
@@ -21,12 +46,6 @@ export async function streamText(container, text, speedMs = 18) {
     await new Promise(r => setTimeout(r, text[i] === '\n' ? 5 : speedMs));
   }
   cursor.remove();
-}
-
-// ── Simulate AI thinking delay ───────────────────────────────
-export async function thinkDelay(min = 1200, max = 2400) {
-  const ms = min + Math.random() * (max - min);
-  return new Promise(r => setTimeout(r, ms));
 }
 
 // ── IDEA FORGE ENGINE ────────────────────────────────────────
@@ -49,8 +68,8 @@ export function generateMarketData(idea) {
   const competitors = [12, 24, 8, 35, 17, 6, 43, 21][h % 8];
 
   const insights = [
-    `The ${extractDomain(idea)} space is experiencing a ${growth}% CAGR driven by AI adoption and remote-first work culture.`,
-    `Enterprise buyers are spending 3× more on ${extractDomain(idea)} tools vs. 2023, with budgets consolidating toward integrated platforms.`,
+    `The space is experiencing a ${growth}% CAGR driven by AI adoption and remote-first work culture.`,
+    `Enterprise buyers are spending 3× more on tools vs. 2023, with budgets consolidating toward integrated platforms.`,
     `SMB market shows fastest growth at ${growth + 8}% YoY — largely underserved by current tools which are built for enterprise.`,
     `Recent VC investment in this category totaled $2.1B in the last 12 months, signaling strong investor confidence.`,
     `Community-led growth is the dominant GTM strategy — tools with built-in sharing mechanics grow 2.8× faster.`,
@@ -116,7 +135,6 @@ export function generateDevilsAdvocate(idea) {
 }
 
 export function generateCompetitors(idea) {
-  const domain = extractDomain(idea);
   const h = hashString(idea);
 
   const competitorSets = {
@@ -166,7 +184,16 @@ export function generatePainPoints(idea) {
 }
 
 // ── PRD ARCHITECT ENGINE ─────────────────────────────────────
-export function generatePRD(idea, type, audience) {
+export async function generatePRD(idea, type, audience) {
+  const apiKey = localStorage.getItem('openai_key');
+  if (apiKey) {
+    const aiText = await callOpenAI(
+      "You are an expert Product Manager. Write a highly detailed PRD in Markdown format. Use clear headings, bullet points, and tables where appropriate.",
+      `Product Idea: ${idea}\nDocument Type: ${type}\nTarget Audience: ${audience}\nRespond directly with the Markdown.`
+    );
+    if (aiText) return aiText;
+  }
+
   const h = hashString(idea + type);
   const featureName = idea.length > 40 ? idea.substring(0, 40) + '...' : idea;
 
@@ -667,7 +694,7 @@ export function generatePersona(segment) {
     emoji,
     age: 28 + (h % 15),
     experience: 4 + (h % 9) + ' years in product',
-    tags: [extractDomain(segment), 'B2B SaaS', 'AI-curious', 'Data-driven'],
+    tags: [segment, 'B2B SaaS', 'AI-curious', 'Data-driven'],
     goals: goalsPool.slice(0, 4),
     pains: painsPool.slice(0, 4),
     motivations: motivationsPool.slice(0, 3),
@@ -784,7 +811,22 @@ function generateConflictAnalysis(segment, h) {
 }
 
 // ── PRIORITY MATRIX ENGINE ───────────────────────────────────
-export function scoreFeature(featureName) {
+export async function scoreFeature(featureName) {
+  const apiKey = localStorage.getItem('openai_key');
+  if (apiKey) {
+    const aiText = await callOpenAI(
+      "You are a PM. Score the feature using RICE framework. Respond with valid JSON only. Schema: { \"reach\": number(100-10000), \"impact\": number(1,2,3), \"confidence\": number(0.1-1.0), \"effort\": number(1-5), \"riceScore\": number, \"effortLabel\": string('S','M','L','XL'), \"effortCls\": string('eff-s','eff-m','eff-l','eff-xl'), \"moscow\": string('must','should','could','wont'), \"dependencies\": string[] }",
+      `Feature: ${featureName}`
+    );
+    if (aiText) {
+      try {
+        const parsed = JSON.parse(aiText.replace(/```json/g, '').replace(/```/g, '').trim());
+        parsed.name = featureName;
+        return parsed;
+      } catch(e) {}
+    }
+  }
+
   const h = hashString(featureName + 'rice');
 
   const reach      = 1000 + (h % 9000);

@@ -196,6 +196,23 @@ function initAppShell() {
     e.preventDefault();
     openApp();
   });
+
+  // Settings Modal
+  document.getElementById('topbar-settings-btn')?.addEventListener('click', () => {
+    document.getElementById('settings-modal')?.classList.remove('hidden');
+    const input = document.getElementById('openai-key-input');
+    if (input) input.value = localStorage.getItem('openai_key') || '';
+  });
+  document.getElementById('close-settings-btn')?.addEventListener('click', () => {
+    document.getElementById('settings-modal')?.classList.add('hidden');
+  });
+  document.getElementById('save-settings-btn')?.addEventListener('click', () => {
+    const key = document.getElementById('openai-key-input')?.value.trim();
+    if (key) localStorage.setItem('openai_key', key);
+    else localStorage.removeItem('openai_key');
+    document.getElementById('settings-modal')?.classList.add('hidden');
+    import('./components/notifications.js').then(n => n.toastSuccess('Settings saved', 'Hybrid AI configuration updated.'));
+  });
 }
 
 // ── Module Initialization ────────────────────────────────────
@@ -219,6 +236,7 @@ function initStateSubscriptions() {
   // Health bars in dashboard
   State.on('health', health => {
     updateHealthBars(health);
+    checkLifecycleHealth(health);
   });
 
   // Activity feed
@@ -277,6 +295,26 @@ function updateHealthBars(health) {
     }
     if (valEl) valEl.textContent = b.val > 0 ? Math.round(b.val) + '%' : '—';
   });
+}
+
+let lastInsight = '';
+function checkLifecycleHealth(health) {
+  const { idea, prd, user, launch } = health;
+  let insight = null;
+  
+  if (idea > 50 && user === 0) {
+    insight = "Your idea is validated, but you don't have a Persona yet. Build one in Persona Lab to know who you're building for.";
+  } else if (idea > 50 && user > 50 && prd === 0) {
+    insight = "You have an idea and a persona, but no PRD. Generate one in PRD Architect to align engineering.";
+  } else if (prd > 70 && launch === 0) {
+    insight = "Your PRD is solid. Score features in PriorityMatrix before generating your GTM Launch plan.";
+  }
+  
+  if (insight && insight !== lastInsight) {
+    lastInsight = insight;
+    State.addInsight('🧠', insight);
+    import('./components/notifications.js').then(n => n.toastInfo('AI Lifecycle Insight', insight));
+  }
 }
 
 function updateModuleStatusGrid(status) {

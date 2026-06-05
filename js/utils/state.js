@@ -3,7 +3,8 @@
 // Centralized reactive state with pub/sub
 // ============================================================
 
-const _state = {
+const savedState = localStorage.getItem('shipsense_state');
+let _state = savedState ? JSON.parse(savedState) : {
   currentModule: 'dashboard',
   sessionScore: 0,
   moduleStatus: {
@@ -73,6 +74,10 @@ export const State = {
         try { cb(value, prev); } catch (e) { console.error('State listener error:', e); }
       });
     }
+    // Persist state
+    try {
+      localStorage.setItem('shipsense_state', JSON.stringify(_state));
+    } catch(e) {}
   },
 
   addActivity(label, module) {
@@ -87,6 +92,11 @@ export const State = {
     if (activities.length > 20) activities.pop();
     this._notify('activities', activities, null);
     this._notify('*', _state, null);
+    
+    // Novus Telemetry
+    if (window.novus) {
+      window.novus.track('module_activity', { module, label });
+    }
   },
 
   addInsight(emoji, text) {
@@ -120,6 +130,11 @@ export const State = {
     _state.sessionScore = Math.min(100, _state.sessionScore + amount);
     this._notify('sessionScore', _state.sessionScore, null);
     this._notify('*', _state, null);
+    
+    // Novus Telemetry
+    if (window.novus) {
+      window.novus.track('score_increased', { amount, newScore: _state.sessionScore });
+    }
   },
 
   updateHealth(key, value) {

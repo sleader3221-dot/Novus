@@ -197,6 +197,24 @@ function handleDownload() {
     return;
   }
   const date = new Date().toISOString().slice(0, 10);
-  downloadFile(currentPRDText, `shipsense-prd-${date}.md`);
-  toastSuccess('Downloaded!', 'Your PRD markdown file is ready.');
+  const element = document.getElementById('prd-rendered-content');
+  
+  if (element && window.html2pdf) {
+    // PDF Export Polish
+    const opt = {
+      margin:       10,
+      filename:     `shipsense-prd-${date}.pdf`,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2 },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(element).save().then(() => {
+      toastSuccess('PDF Downloaded!', 'Your polished PRD is ready.');
+      if (window.novus) window.novus.track('prd_pdf_downloaded');
+    });
+  } else {
+    // Fallback to markdown
+    downloadFile(currentPRDText, `shipsense-prd-${date}.md`);
+    toastSuccess('Downloaded!', 'Your PRD markdown file is ready.');
+  }
 }

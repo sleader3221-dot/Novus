@@ -44,6 +44,21 @@ export function initFeedbackFusion() {
     fbInput.style.height = fbInput.scrollHeight + 'px';
   });
 
+  // Cross-module logic for "Push to PriorityMatrix"
+  document.body.addEventListener('click', e => {
+    if (e.target.classList.contains('push-to-pm-btn')) {
+      const featName = e.target.dataset.feature;
+      import('../app.js').then(app => {
+        app.navigateToModule('priority-matrix');
+        const pmInput = document.getElementById('pm-feature-input');
+        if (pmInput) {
+          pmInput.value = featName;
+          document.getElementById('pm-add-btn')?.click();
+        }
+      });
+    }
+  });
+
   analyzeBtn?.addEventListener('click', () => runAnalysis(fbInput.value));
 }
 
@@ -173,11 +188,14 @@ function renderFeatureRanker(features) {
   if (!el) return;
 
   el.innerHTML = features.map((f, i) => `
-    <div class="fr-item" style="animation-delay:${i * 0.06}s">
-      <span class="fr-rank ${i < 3 ? 'top' : ''}">#${i + 1}</span>
-      <span class="fr-name">${f.name}</span>
-      <span class="fr-mentions">${f.mentions} mentions</span>
-      <span class="fr-score">${f.score}</span>
+    <div class="fr-item" style="animation-delay:${i * 0.06}s;display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="fr-rank ${i < 3 ? 'top' : ''}">#${i + 1}</span>
+        <span class="fr-name">${f.name}</span>
+        <span class="fr-mentions">${f.mentions} mentions</span>
+        <span class="fr-score">${f.score}</span>
+      </div>
+      <button class="btn btn--ghost btn--sm push-to-pm-btn" data-feature="${f.name}">Push to PriorityMatrix 🎯</button>
     </div>`).join('');
 }
 
