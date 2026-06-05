@@ -73,7 +73,7 @@ async function runGenerate(idea) {
 
   await thinkDelay(1600, 2600);
 
-  const prdContent = generatePRD(idea, prdType, prdAudience);
+  const prdContent = await generatePRD(idea, prdType, prdAudience);
   currentPRDText = prdContent;
 
   hideAIOverlay();

@@ -123,7 +123,7 @@ function renderRICEList() {
     list.innerHTML = `
       <div class="rice-empty">
         <div style="margin-bottom:12px">Add features above to start scoring →</div>
-        <button class="btn btn--primary btn--glow" id="pm-load-sample-btn">✨ Load Sample Features</button>
+        <button class="btn btn--primary btn--glow" id="pm-load-sample-btn" style="margin: 0 auto;">⚡ Load Sample Framework</button>
       </div>`;
     return;
   }
