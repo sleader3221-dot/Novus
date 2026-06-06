@@ -51,6 +51,15 @@ export function initIdeaForge() {
     const idea = ideaInput.value;
     const prdInput = document.getElementById('prd-idea-input');
     if (prdInput && idea) prdInput.value = idea;
+
+    // Pendo Track Event: idea_sent_to_prd
+    if (typeof pendo !== 'undefined') {
+      pendo.track('idea_sent_to_prd', {
+        ideaText: idea ? idea.substring(0, 100) : '',
+        ideaLength: idea ? idea.length : 0,
+      });
+    }
+
     document.querySelector('.sidebar-item[data-module="prd-architect"]')?.click();
   });
 }
@@ -103,6 +112,21 @@ async function runAnalysis(idea) {
   State.updateHealth('idea', scoreData.total);
   State.addActivity(`Scored idea: "${idea.substring(0, 40)}…"`, 'ideaforge');
   State.incrementScore(15);
+
+  // Pendo Track Event: idea_analyzed
+  if (typeof pendo !== 'undefined') {
+    pendo.track('idea_analyzed', {
+      ideaLength: idea.length,
+      shipScoreTotal: scoreData.total,
+      marketScore: scoreData.market,
+      noveltyScore: scoreData.novelty,
+      viabilityScore: scoreData.viability,
+      timingScore: scoreData.timing,
+      verdict: getScoreVerdict(scoreData.total).text,
+      competitorCount: competitors.length,
+      painValidationScore: painData.validationScore,
+    });
+  }
 
   // Push insights
   setTimeout(() => {
@@ -248,6 +272,18 @@ async function runHeroScore(idea) {
   await thinkDelay(800, 1400);
 
   const data = generateShipScore(idea);
+
+  // Pendo Track Event: hero_idea_scored
+  if (typeof pendo !== 'undefined') {
+    pendo.track('hero_idea_scored', {
+      ideaLength: idea.length,
+      shipScoreTotal: data.total,
+      marketScore: data.market,
+      noveltyScore: data.novelty,
+      viabilityScore: data.viability,
+      timingScore: data.timing,
+    });
+  }
 
   // Ring
   const ring = document.getElementById('hero-score-ring');

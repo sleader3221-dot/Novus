@@ -108,9 +108,9 @@ export const State = {
     this._notify('activities', activities, null);
     this._notify('*', _state, null);
     
-    // Novus Telemetry
-    if (window.novus) {
-      window.novus.track('module_activity', { module, label });
+    // Pendo Track Event: module_activity
+    if (typeof pendo !== 'undefined') {
+      pendo.track('module_activity', { module, label });
     }
   },
 
@@ -146,9 +146,9 @@ export const State = {
     this._notify('sessionScore', _state.sessionScore, null);
     this._notify('*', _state, null);
     
-    // Novus Telemetry
-    if (window.novus) {
-      window.novus.track('score_increased', { amount, newScore: _state.sessionScore });
+    // Pendo Track Event: score_increased
+    if (typeof pendo !== 'undefined') {
+      pendo.track('score_increased', { amount, newScore: _state.sessionScore });
     }
   },
 

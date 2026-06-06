@@ -207,10 +207,21 @@ function initAppShell() {
     document.getElementById('settings-modal')?.classList.add('hidden');
   });
   document.getElementById('save-settings-btn')?.addEventListener('click', () => {
+    const previousKey = localStorage.getItem('openai_key');
     const key = document.getElementById('openai-key-input')?.value.trim();
     if (key) localStorage.setItem('openai_key', key);
     else localStorage.removeItem('openai_key');
     document.getElementById('settings-modal')?.classList.add('hidden');
+
+    // Pendo Track Event: settings_saved
+    if (typeof pendo !== 'undefined') {
+      pendo.track('settings_saved', {
+        hasApiKey: !!key,
+        isNewKey: !!key && !previousKey,
+        isKeyRemoved: !key && !!previousKey,
+      });
+    }
+
     import('./components/notifications.js').then(n => n.toastSuccess('Settings saved', 'Hybrid AI configuration updated.'));
   });
 }

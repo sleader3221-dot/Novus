@@ -42,12 +42,28 @@ export function initFeedbackFusion() {
     fbInput.value = getSampleFeedback();
     fbInput.style.height = 'auto';
     fbInput.style.height = fbInput.scrollHeight + 'px';
+
+    // Pendo Track Event: sample_feedback_loaded
+    if (typeof pendo !== 'undefined') {
+      pendo.track('sample_feedback_loaded', {
+        feedbackType: fbType,
+      });
+    }
   });
 
   // Cross-module logic for "Push to PriorityMatrix"
   document.body.addEventListener('click', e => {
     if (e.target.classList.contains('push-to-pm-btn')) {
       const featName = e.target.dataset.feature;
+
+      // Pendo Track Event: feature_pushed_to_priority_matrix
+      if (typeof pendo !== 'undefined') {
+        pendo.track('feature_pushed_to_priority_matrix', {
+          featureName: featName,
+          sourceModule: 'feedback-fusion',
+        });
+      }
+
       import('../app.js').then(app => {
         app.navigateToModule('priority-matrix');
         const pmInput = document.getElementById('pm-feature-input');
@@ -100,6 +116,24 @@ async function runAnalysis(rawText) {
   State.setModuleStatus('feedback-fusion', 'done');
   State.addActivity(`Analyzed ${rawText.split('\n').filter(l => l.trim()).length} feedback items`, 'feedback-fusion');
   State.incrementScore(16);
+
+  // Pendo Track Event: feedback_analyzed
+  if (typeof pendo !== 'undefined') {
+    const topCluster = results.clusters[0];
+    const topFeature = results.featureRanking[0];
+    pendo.track('feedback_analyzed', {
+      feedbackType: fbType,
+      inputLineCount: rawText.split('\n').filter(l => l.trim()).length,
+      inputLength: rawText.length,
+      clusterCount: results.clusters.length,
+      sentimentPositive: results.sentiment.positive,
+      sentimentNeutral: results.sentiment.neutral,
+      sentimentNegative: results.sentiment.negative,
+      topClusterName: topCluster ? topCluster.name : '',
+      topFeatureRequest: topFeature ? topFeature.name : '',
+      topFeatureMentions: topFeature ? topFeature.mentions : 0,
+    });
+  }
 
   // Insights
   const topCluster = results.clusters[0];

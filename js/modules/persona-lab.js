@@ -92,6 +92,19 @@ async function runGenerate(segment) {
   State.addActivity(`Built persona: "${currentPersona.name}" (${segment.substring(0, 30)}…)`, 'persona-lab');
   State.incrementScore(18);
 
+  // Pendo Track Event: persona_generated
+  if (typeof pendo !== 'undefined') {
+    pendo.track('persona_generated', {
+      segmentInput: segment.substring(0, 100),
+      personaName: currentPersona.name,
+      personaRole: currentPersona.role,
+      techSavvyScore: currentPersona.attrs.techSavvy,
+      riskToleranceScore: currentPersona.attrs.riskTolerance,
+      dataFocusScore: currentPersona.attrs.dataFocus,
+      collaborationScore: currentPersona.attrs.collaboration,
+    });
+  }
+
   pushInsight('👥', `Persona "${currentPersona.name}" created. Key insight: their top pain is "${currentPersona.pains[0].substring(0, 60)}"`);
   pushInsight('🎯', `JTBD core statement captured. Use this to frame your PRD problem statement — it makes engineering briefs 40% more persuasive.`);
 

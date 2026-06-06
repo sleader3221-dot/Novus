@@ -27,6 +27,13 @@ export function initPriorityMatrix() {
   // "Load Sample Features" global listener
   document.body.addEventListener('click', e => {
     if (e.target.id === 'pm-load-sample-btn') {
+      // Pendo Track Event: sample_features_loaded
+      if (typeof pendo !== 'undefined') {
+        pendo.track('sample_features_loaded', {
+          sampleFeatureCount: 5,
+        });
+      }
+
       ['AI-powered search', 'Dark mode', 'Bulk export', 'Mobile app', 'Integrations'].forEach(async (f, i) => {
         setTimeout(() => addFeature(f), i * 300);
       });
@@ -34,6 +41,15 @@ export function initPriorityMatrix() {
     // "Draft PRD" cross-module listener
     if (e.target.classList.contains('draft-prd-btn')) {
       const featName = e.target.dataset.feature;
+
+      // Pendo Track Event: draft_prd_from_sprint
+      if (typeof pendo !== 'undefined') {
+        pendo.track('draft_prd_from_sprint', {
+          featureName: featName,
+          sourceModule: 'priority-matrix',
+        });
+      }
+
       import('../app.js').then(app => {
         app.navigateToModule('prd-architect');
         const prdInput = document.getElementById('prd-idea-input');
@@ -103,6 +119,23 @@ async function addFeature(name) {
   // Insights after 3+ features
   if (features.length === 3) {
     pushInsight('🎯', `You have ${features.length} features scored. The top priority by RICE is "${features[0].name}" — validate this with stakeholders before committing.`);
+  }
+
+  // Pendo Track Event: feature_scored
+  if (typeof pendo !== 'undefined') {
+    pendo.track('feature_scored', {
+      featureName: trimmed.substring(0, 100),
+      riceScore: scored.riceScore,
+      reach: scored.reach,
+      impact: scored.impact,
+      confidence: scored.confidence,
+      effort: scored.effort,
+      effortLabel: scored.effortLabel,
+      moscowCategory: scored.moscow,
+      dependencyCount: scored.dependencies.length,
+      totalFeaturesScored: features.length,
+      usedOpenAI: !!localStorage.getItem('openai_key'),
+    });
   }
 
   toastSuccess('Feature scored!', `"${trimmed}" — RICE: ${scored.riceScore}`);
@@ -246,6 +279,19 @@ function runSim() {
   State.updateHealth('idea', Math.max(State.get('health').idea, 65));
   State.addActivity(`Sprint simulation: ${sprints.length} sprints · ${teamSize} engineers`, 'priority-matrix');
   State.incrementScore(12);
+
+  // Pendo Track Event: sprint_simulation_completed
+  if (typeof pendo !== 'undefined') {
+    pendo.track('sprint_simulation_completed', {
+      teamSize,
+      sprintWeeks,
+      totalFeatures: features.length,
+      totalSprints: sprints.length,
+      totalPoints: sprints.reduce((acc, s) => acc + s.points, 0),
+      highConfidenceSprints: sprints.filter(s => s.confidence === 'high').length,
+      lowConfidenceSprints: sprints.filter(s => s.confidence === 'low').length,
+    });
+  }
 
   pushInsight('⚡', `Sprint simulation complete. ${sprints.length} sprints to ship all ${features.length} features with ${teamSize} engineers. Highest risk: Sprint ${sprints.findIndex(s => s.confidence === 'low') + 1 || 'none'}.`);
 
