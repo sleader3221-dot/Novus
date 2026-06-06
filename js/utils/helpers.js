@@ -103,40 +103,145 @@ export function deterministicScore(input, min, max) {
   return min + (hash % (max - min + 1));
 }
 
-/** Convert markdown-like text to HTML */
+function escapeHTML(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function renderInlineMarkdown(value) {
+  const codeSpans = [];
+  let html = escapeHTML(value).replace(/`([^`]+)`/g, (_, code) => {
+    const index = codeSpans.push(`<code>${code}</code>`) - 1;
+    return `\u0000CODE${index}\u0000`;
+  });
+
+  html = html
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+  return html.replace(/\u0000CODE(\d+)\u0000/g, (_, index) => codeSpans[Number(index)]);
+}
+
+function parseTableCells(line) {
+  return line
+    .trim()
+    .replace(/^\|/, '')
+    .replace(/\|$/, '')
+    .split('|')
+    .map(cell => cell.trim());
+}
+
+function isTableSeparator(line) {
+  const cells = parseTableCells(line);
+  return cells.length > 0 && cells.every(cell => /^:?-{3,}:?$/.test(cell));
+}
+
+/** Convert the generated Markdown subset into safe, structured HTML. */
 export function markdownToHTML(text) {
   if (!text) return '';
-  let html = text
-    // Headers
-    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-    // Bold
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    // Italic
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    // Code
-    .replace(/`(.+?)`/g, '<code>$1</code>')
-    // HR
-    .replace(/^---$/gm, '<hr/>')
-    // Blockquote
-    .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
-    // Unordered lists
-    .replace(/^\- (.+)$/gm, '<li>$1</li>')
-    // Ordered lists  
-    .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
-    // Wrap consecutive li in ul
-    .replace(/(<li>.*<\/li>\n?)+/g, match => `<ul>${match}</ul>`)
-    // Paragraphs (double newline)
-    .replace(/\n\n(?!<)/g, '</p><p>')
-    // Line breaks
-    .replace(/\n(?!<)/g, '<br/>');
 
-  // Wrap in paragraph if not already block element
-  if (!html.startsWith('<h') && !html.startsWith('<ul') && !html.startsWith('<hr')) {
-    html = '<p>' + html + '</p>';
+  const lines = String(text).replace(/\r\n?/g, '\n').split('\n');
+  const blocks = [];
+  let paragraph = [];
+  let listType = null;
+  let listItems = [];
+
+  const flushParagraph = () => {
+    if (paragraph.length === 0) return;
+    blocks.push(`<p>${paragraph.map(renderInlineMarkdown).join('<br/>')}</p>`);
+    paragraph = [];
+  };
+
+  const flushList = () => {
+    if (!listType || listItems.length === 0) return;
+    blocks.push(`<${listType}>${listItems.map(item => `<li>${renderInlineMarkdown(item)}</li>`).join('')}</${listType}>`);
+    listType = null;
+    listItems = [];
+  };
+
+  const flushOpenBlocks = () => {
+    flushParagraph();
+    flushList();
+  };
+
+  for (let index = 0; index < lines.length; index++) {
+    const line = lines[index];
+    const trimmed = line.trim();
+
+    if (!trimmed) {
+      flushOpenBlocks();
+      continue;
+    }
+
+    const heading = /^(#{1,3})\s+(.+)$/.exec(trimmed);
+    if (heading) {
+      flushOpenBlocks();
+      const level = heading[1].length;
+      blocks.push(`<h${level}>${renderInlineMarkdown(heading[2])}</h${level}>`);
+      continue;
+    }
+
+    if (/^-{3,}$/.test(trimmed)) {
+      flushOpenBlocks();
+      blocks.push('<hr/>');
+      continue;
+    }
+
+    if (trimmed.startsWith('> ')) {
+      flushOpenBlocks();
+      const quoteLines = [];
+      while (index < lines.length && lines[index].trim().startsWith('> ')) {
+        quoteLines.push(renderInlineMarkdown(lines[index].trim().slice(2)));
+        index++;
+      }
+      index--;
+      blocks.push(`<blockquote>${quoteLines.join('<br/>')}</blockquote>`);
+      continue;
+    }
+
+    const nextLine = lines[index + 1];
+    if (trimmed.includes('|') && nextLine && isTableSeparator(nextLine)) {
+      flushOpenBlocks();
+      const headers = parseTableCells(trimmed);
+      const rows = [];
+      index += 2;
+
+      while (index < lines.length && lines[index].trim() && lines[index].includes('|')) {
+        rows.push(parseTableCells(lines[index]));
+        index++;
+      }
+      index--;
+
+      const headerHTML = headers.map(cell => `<th>${renderInlineMarkdown(cell)}</th>`).join('');
+      const bodyHTML = rows.map(row => {
+        const cells = headers.map((_, cellIndex) => `<td>${renderInlineMarkdown(row[cellIndex] || '')}</td>`).join('');
+        return `<tr>${cells}</tr>`;
+      }).join('');
+      blocks.push(`<table><thead><tr>${headerHTML}</tr></thead><tbody>${bodyHTML}</tbody></table>`);
+      continue;
+    }
+
+    const unorderedItem = /^[-*]\s+(.+)$/.exec(trimmed);
+    const orderedItem = /^\d+\.\s+(.+)$/.exec(trimmed);
+    if (unorderedItem || orderedItem) {
+      flushParagraph();
+      const nextListType = orderedItem ? 'ol' : 'ul';
+      if (listType && listType !== nextListType) flushList();
+      listType = nextListType;
+      listItems.push((orderedItem || unorderedItem)[1]);
+      continue;
+    }
+
+    flushList();
+    paragraph.push(trimmed);
   }
-  return html;
+
+  flushOpenBlocks();
+  return blocks.join('\n');
 }
 
 /** Copy text to clipboard */

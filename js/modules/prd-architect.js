@@ -7,13 +7,14 @@
 import { generatePRD, generatePRDHealth, thinkDelay } from '../ai-engine.js';
 import { markdownToHTML, copyToClipboard, downloadFile, show, hide } from '../utils/helpers.js';
 import { State } from '../utils/state.js';
-import { toastSuccess, toastInfo, pushInsight } from '../components/notifications.js';
+import { toastSuccess, toastError, toastInfo, toastWarn, pushInsight } from '../components/notifications.js';
 import { showAIOverlay, hideAIOverlay } from './ideaforge.js';
 
 let currentPRDText = '';
 let prdType = 'full-prd';
 let prdAudience = 'engineering';
 let isGenerating = false;
+let isExporting = false;
 
 export function initPRDArchitect() {
   const ideaInput   = document.getElementById('prd-idea-input');
@@ -191,30 +192,97 @@ async function handleCopy() {
   toastSuccess('Copied!', 'PRD content copied to clipboard.');
 }
 
-function handleDownload() {
+function createPDFDocument(source) {
+  const staging = document.createElement('div');
+  staging.className = 'prd-pdf-staging';
+  staging.setAttribute('aria-hidden', 'true');
+
+  const pdfDocument = source.cloneNode(true);
+  pdfDocument.removeAttribute('id');
+  pdfDocument.classList.add('prd-pdf-document');
+  pdfDocument.setAttribute('aria-hidden', 'true');
+  pdfDocument.querySelectorAll('[id]').forEach(element => element.removeAttribute('id'));
+  pdfDocument.querySelectorAll('.streaming-cursor').forEach(element => element.remove());
+  Array.from(pdfDocument.querySelectorAll('h1, h2, h3')).reverse().forEach(heading => {
+    const nextBlock = heading.nextElementSibling;
+    if (!nextBlock) return;
+    const group = document.createElement('div');
+    group.className = 'prd-pdf-heading-group';
+    heading.before(group);
+    group.append(heading, nextBlock);
+  });
+  staging.appendChild(pdfDocument);
+  document.body.appendChild(staging);
+  return { pdfDocument, staging };
+}
+
+async function handleDownload() {
+  if (isExporting) return;
   if (!currentPRDText) {
-    import('../components/notifications.js').then(n => n.toastWarn('Nothing to download', 'Generate a PRD first.'));
+    toastWarn('Nothing to download', 'Generate a PRD first.');
     return;
   }
+
   const date = new Date().toISOString().slice(0, 10);
-  const element = document.getElementById('prd-rendered-content');
-  
-  if (element && window.html2pdf) {
-    // PDF Export Polish
-    const opt = {
-      margin:       10,
-      filename:     `shipsense-prd-${date}.pdf`,
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2 },
-      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-    html2pdf().set(opt).from(element).save().then(() => {
-      toastSuccess('PDF Downloaded!', 'Your polished PRD is ready.');
-      if (window.novus) window.novus.track('prd_pdf_downloaded');
-    });
-  } else {
-    // Fallback to markdown
+  const source = document.getElementById('prd-rendered-content');
+  const downloadBtn = document.getElementById('prd-download-btn');
+
+  if (!source || typeof window.html2pdf !== 'function') {
     downloadFile(currentPRDText, `shipsense-prd-${date}.md`);
-    toastSuccess('Downloaded!', 'Your PRD markdown file is ready.');
+    toastWarn('PDF export unavailable', 'Downloaded the Markdown version instead.');
+    return;
+  }
+
+  isExporting = true;
+  if (downloadBtn) {
+    downloadBtn.disabled = true;
+    downloadBtn.setAttribute('aria-busy', 'true');
+  }
+
+  let pdfDocument;
+  let pdfStaging;
+  try {
+    if (document.fonts?.ready) await document.fonts.ready;
+    ({ pdfDocument, staging: pdfStaging } = createPDFDocument(source));
+
+    const options = {
+      margin: [12, 12, 14, 12],
+      filename: `shipsense-prd-${date}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      pagebreak: {
+        mode: ['css', 'legacy'],
+        avoid: ['.prd-pdf-heading-group', 'table', 'thead', 'tr', 'blockquote']
+      },
+      html2canvas: {
+        scale: 2,
+        backgroundColor: '#ffffff',
+        useCORS: true,
+        logging: false,
+        scrollX: 0,
+        scrollY: 0
+      },
+      jsPDF: {
+        unit: 'mm',
+        format: 'a4',
+        orientation: 'portrait',
+        compress: true
+      }
+    };
+
+    await window.html2pdf().set(options).from(pdfDocument).save();
+    toastSuccess('PDF Downloaded!', 'Your PRD is ready with print-safe colors and formatting.');
+    if (window.novus) window.novus.track('prd_pdf_downloaded');
+  } catch (error) {
+    console.error('PRD PDF export failed:', error);
+    downloadFile(currentPRDText, `shipsense-prd-${date}.md`);
+    toastError('PDF export failed', 'Downloaded the Markdown version so your work is not lost.');
+  } finally {
+    pdfStaging?.remove();
+    document.querySelectorAll('.html2pdf__overlay').forEach(element => element.remove());
+    if (downloadBtn) {
+      downloadBtn.disabled = false;
+      downloadBtn.removeAttribute('aria-busy');
+    }
+    isExporting = false;
   }
 }
