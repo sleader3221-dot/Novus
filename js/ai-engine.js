@@ -835,7 +835,7 @@ export async function scoreFeature(featureName) {
   const effort     = 1 + ((h >> 8) % 8); // 1-8
 
   const riceScore  = Math.round((reach * impact * confidence) / effort);
-  const effortLabels = ['', 'XS', 'XS', 'S', 'S', 'M', 'M', 'L', 'XL'];
+  const effortLabels = ['', 'XS', 'XS', 'S', 'S',   'M',   'M',   'L',   'XL'];
   const effortCls    = ['', 'effort-xs', 'effort-xs', 'effort-s', 'effort-s', 'effort-m', 'effort-m', 'effort-l', 'effort-xl'];
 
   const moscowOpts = ['must', 'must', 'should', 'should', 'could', 'wont'];

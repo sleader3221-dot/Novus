@@ -844,11 +844,11 @@
   font-size: 10px;
   font-weight: 700;
 }
-.effort-xs { background: rgba(16,185,129,0.15); color: var(--color-emerald); }
-.effort-s  { background: rgba(6,182,212,0.15); color: var(--color-cyan); }
-.effort-m  { background: rgba(245,158,11,0.15); color: var(--color-amber); }
-.effort-l  { background: rgba(244,63,94,0.15); color: var(--color-rose); }
-.effort-xl { background: rgba(239,68,68,0.15); color: #ef4444; }
+.effort-xs { background: rgba(16,185,129,0.12); color: var(--color-emerald); border: 1px solid rgba(16,185,129,0.2); }
+.effort-s  { background: rgba(6,182,212,0.12); color: var(--color-cyan); border: 1px solid rgba(6,182,212,0.2); }
+.effort-m  { background: rgba(245,158,11,0.12); color: var(--color-amber); border: 1px solid rgba(245,158,11,0.2); }
+.effort-l  { background: rgba(244,63,94,0.12); color: var(--color-rose); border: 1px solid rgba(244,63,94,0.2); }
+.effort-xl { background: rgba(239,68,68,0.12); color: #ef4444; border: 1px solid rgba(239,68,68,0.2); }
 
 /* MoSCoW Grid */
 .moscow-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-4); }

@@ -3,8 +3,7 @@
 // Centralized reactive state with pub/sub
 // ============================================================
 
-const savedState = localStorage.getItem('shipsense_state');
-let _state = savedState ? JSON.parse(savedState) : {
+const _defaults = {
   currentModule: 'dashboard',
   sessionScore: 0,
   moduleStatus: {
@@ -15,24 +14,40 @@ let _state = savedState ? JSON.parse(savedState) : {
     'feedback-fusion':'idle',
     'launch-control': 'idle',
   },
-  health: {
-    idea:   0,
-    prd:    0,
-    user:   0,
-    launch: 0,
-  },
+  health: { idea: 0, prd: 0, user: 0, launch: 0 },
   insights: [],
   activities: [],
   scoreHistory: [],
-  features: [],          // Priority Matrix features
+  features: [],
   currentIdea: '',
   currentPersona: null,
   currentPRD: null,
   prdVersions: [],
   feedbackResults: null,
   launchResults: null,
-  checklistState: {},    // Launch checklist item states
+  checklistState: {},
 };
+
+function safeLoadState() {
+  try {
+    const raw = localStorage.getItem('shipsense_state');
+    if (!raw) return { ..._defaults };
+    const saved = JSON.parse(raw);
+    // Deep-merge: saved values win, but missing keys fall back to defaults
+    return {
+      ..._defaults,
+      ...saved,
+      moduleStatus: { ..._defaults.moduleStatus, ...(saved.moduleStatus || {}) },
+      health:       { ..._defaults.health,       ...(saved.health       || {}) },
+    };
+  } catch (e) {
+    console.warn('[ShipSense] State parse error — resetting.', e);
+    localStorage.removeItem('shipsense_state');
+    return { ..._defaults };
+  }
+}
+
+let _state = safeLoadState();
 
 const _listeners = {};
 
