@@ -81,6 +81,20 @@ async function runGenerate(product) {
   State.addActivity(`Generated launch plan for "${product.substring(0, 40)}…"`, 'launch-control');
   State.incrementScore(22);
 
+  // Pendo Track Event: launch_plan_generated
+  if (typeof pendo !== 'undefined') {
+    pendo.track('launch_plan_generated', {
+      productName: product.substring(0, 100),
+      productNameLength: product.length,
+      checklistItemCount: currentPlan.checklist.categories.reduce((acc, c) => acc + c.items.length, 0),
+      checklistCategoryCount: currentPlan.checklist.categories.length,
+      changelogVersionCount: currentPlan.changelog.length,
+      leadingMetricCount: currentPlan.metrics.leading.length,
+      laggingMetricCount: currentPlan.metrics.lagging.length,
+      guardrailMetricCount: currentPlan.metrics.guardrails.length,
+    });
+  }
+
   pushInsight('🛸', `Launch plan generated! Your Ship Readiness Checklist has ${currentPlan.checklist.categories.reduce((acc, c) => acc + c.items.length, 0)} items. Start with "Technical" and "Analytics" categories first.`);
   pushInsight('📊', `Success metrics defined. Leading indicator to watch first: "${currentPlan.metrics.leading[0].name}" — this tells you if you're on track before lagging metrics confirm it.`);
 
@@ -202,6 +216,15 @@ function renderBrief(brief, product) {
   document.getElementById('brief-copy-btn')?.addEventListener('click', async () => {
     const briefText = `${brief.oneLiner}\n\nPROBLEM\n${brief.problem}\n\nSOLUTION\n${brief.solution}\n\nTRACTION\n${brief.traction}\n\nASK\n${brief.ask}`;
     await copyToClipboard(briefText);
+
+    // Pendo Track Event: stakeholder_brief_copied
+    if (typeof pendo !== 'undefined') {
+      pendo.track('stakeholder_brief_copied', {
+        briefLength: briefText.length,
+        productName: product.substring(0, 100),
+      });
+    }
+
     toastSuccess('Brief copied!', 'Paste into your email or deck.');
   });
 }
@@ -283,6 +306,14 @@ function toggleChecklistItem(item, totalItems) {
     toastSuccess('🎉 Ship it!', 'All checklist items complete. You are launch-ready!');
     State.updateHealth('launch', 100);
     pushInsight('🎉', 'Ship Readiness: 100%! All checklist items complete. Time to launch and share with #EveryoneShipsNow!');
+
+    // Pendo Track Event: ship_readiness_completed
+    if (typeof pendo !== 'undefined') {
+      pendo.track('ship_readiness_completed', {
+        totalItems: totalItems,
+        categoriesCompleted: Object.values(checklistState).filter(Boolean).length,
+      });
+    }
   }
 }
 

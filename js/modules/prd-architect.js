@@ -101,6 +101,18 @@ async function runGenerate(idea) {
   State.addActivity(`Generated ${typeLabel[prdType]} for "${idea.substring(0, 35)}…"`, 'prd-architect');
   State.incrementScore(20);
 
+  // Pendo Track Event: prd_generated
+  if (typeof pendo !== 'undefined') {
+    pendo.track('prd_generated', {
+      prdType,
+      prdAudience,
+      ideaLength: idea.length,
+      outputLength: prdContent.length,
+      versionNumber: (State.get('prdVersions') || []).length,
+      usedOpenAI: !!localStorage.getItem('openai_key'),
+    });
+  }
+
   pushInsight('📄', `PRD generated for "${idea.substring(0, 40)}". Check the PRD Health Score to identify any missing sections before sharing with engineering.`);
 
   toastSuccess('PRD Generated!', 'Copy or download your document below.');
@@ -153,6 +165,17 @@ async function runHealthCheck(idea) {
       </div>`).join('');
   }
 
+  // Pendo Track Event: prd_health_checked
+  if (typeof pendo !== 'undefined') {
+    pendo.track('prd_health_checked', {
+      healthScore: health.score,
+      totalChecks: health.checks.length,
+      passedChecks: health.checks.filter(c => c.pass).length,
+      hasPRDContent: !!currentPRDText,
+      contentLength: content.length,
+    });
+  }
+
   toastInfo('Health check complete', `PRD score: ${health.score}/100`);
 }
 
@@ -188,6 +211,15 @@ async function handleCopy() {
     return;
   }
   await copyToClipboard(currentPRDText);
+
+  // Pendo Track Event: prd_copied_to_clipboard
+  if (typeof pendo !== 'undefined') {
+    pendo.track('prd_copied_to_clipboard', {
+      contentLength: currentPRDText.length,
+      prdType,
+    });
+  }
+
   toastSuccess('Copied!', 'PRD content copied to clipboard.');
 }
 
@@ -210,11 +242,30 @@ function handleDownload() {
     };
     html2pdf().set(opt).from(element).save().then(() => {
       toastSuccess('PDF Downloaded!', 'Your polished PRD is ready.');
-      if (window.novus) window.novus.track('prd_pdf_downloaded');
+      // Pendo Track Event: prd_pdf_downloaded
+      if (typeof pendo !== 'undefined') {
+        pendo.track('prd_pdf_downloaded', {
+          prdType,
+          prdAudience,
+          filename: `shipsense-prd-${date}.pdf`,
+          ideaLength: currentPRDText.length,
+        });
+      }
     });
   } else {
     // Fallback to markdown
     downloadFile(currentPRDText, `shipsense-prd-${date}.md`);
+
+    // Pendo Track Event: prd_markdown_downloaded
+    if (typeof pendo !== 'undefined') {
+      pendo.track('prd_markdown_downloaded', {
+        filename: `shipsense-prd-${date}.md`,
+        contentLength: currentPRDText.length,
+        prdType,
+        prdAudience,
+      });
+    }
+
     toastSuccess('Downloaded!', 'Your PRD markdown file is ready.');
   }
 }
