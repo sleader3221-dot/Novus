@@ -234,7 +234,7 @@
           <p class="section-subtitle">Stop context-switching between 10 different apps. ShipSense is the command center where great products are born.</p>
         </div>
         <div class="features-grid" id="features-section">
-          <div class="feature-card glass" data-module="ideaforge">
+          <div class="feature-card glass" id="landing-card-ideaforge" data-module="ideaforge">
             <div class="feat-icon-wrap" style="--ic:#7c3aed">🚀</div>
             <h3 class="feat-title">IdeaForge</h3>
             <p class="feat-desc">AI Ship Score™, market sizing, devil's advocate analysis, and competitor radar — validate any idea in under 30 seconds.</p>
@@ -246,7 +246,7 @@
               <li>Pain Point Validator</li>
             </ul>
           </div>
-          <div class="feature-card glass" data-module="prd-architect">
+          <div class="feature-card glass" id="landing-card-prd-architect" data-module="prd-architect">
             <div class="feat-icon-wrap" style="--ic:#06b6d4">📄</div>
             <h3 class="feat-title">PRD Architect</h3>
             <p class="feat-desc">Generate full PRDs, user stories, and acceptance criteria from a single sentence. Live health scores and version diffs.</p>
@@ -258,7 +258,7 @@
               <li>Version Timeline</li>
             </ul>
           </div>
-          <div class="feature-card glass" data-module="persona-lab">
+          <div class="feature-card glass" id="landing-card-persona-lab" data-module="persona-lab">
             <div class="feat-icon-wrap" style="--ic:#10b981">👥</div>
             <h3 class="feat-title">Persona Lab</h3>
             <p class="feat-desc">Build rich user personas with JTBD canvases, empathy maps, and behavioral predictions — know your users deeply.</p>
@@ -270,7 +270,7 @@
               <li>Behavioral Predictor</li>
             </ul>
           </div>
-          <div class="feature-card glass" data-module="priority-matrix">
+          <div class="feature-card glass" id="landing-card-priority-matrix" data-module="priority-matrix">
             <div class="feat-icon-wrap" style="--ic:#f59e0b">🎯</div>
             <h3 class="feat-title">PriorityMatrix</h3>
             <p class="feat-desc">Dynamic RICE scoring, MoSCoW classification, dependency mapping, and Monte Carlo sprint simulation.</p>
@@ -282,7 +282,7 @@
               <li>Sprint Velocity Simulator</li>
             </ul>
           </div>
-          <div class="feature-card glass" data-module="feedback-fusion">
+          <div class="feature-card glass" id="landing-card-feedback-fusion" data-module="feedback-fusion">
             <div class="feat-icon-wrap" style="--ic:#ec4899">💬</div>
             <h3 class="feat-title">FeedbackFusion</h3>
             <p class="feat-desc">Paste 50 customer comments and get clustered themes, sentiment trajectories, and ranked feature requests instantly.</p>
@@ -294,7 +294,7 @@
               <li>Competitive Intel Digester</li>
             </ul>
           </div>
-          <div class="feature-card glass" data-module="launch-control">
+          <div class="feature-card glass" id="landing-card-launch-control" data-module="launch-control">
             <div class="feat-icon-wrap" style="--ic:#8b5cf6">🛸</div>
             <h3 class="feat-title">LaunchControl</h3>
             <p class="feat-desc">GTM canvas, changelog AI, success metric planner, stakeholder briefs, and ship readiness checklist — launch like a pro.</p>
@@ -431,6 +431,7 @@
           <button class="btn btn--ghost btn--icon" id="topbar-notifications-btn" aria-label="Notifications">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>
             <span class="notification-dot hidden" id="notification-dot"></span>
+          </button>
           <button class="btn btn--ghost btn--icon" id="topbar-settings-btn" aria-label="Settings">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           </button>
@@ -484,22 +485,22 @@
             <div class="dash-card glass">
               <div class="dash-card-header"><h3>Quick Actions</h3></div>
               <div class="quick-actions">
-                <button class="qa-btn" data-module="ideaforge">
+                <button class="qa-btn" id="qa-ideaforge" data-module="ideaforge">
                   <span>🚀</span> Validate Idea
                 </button>
-                <button class="qa-btn" data-module="prd-architect">
+                <button class="qa-btn" id="qa-prd-architect" data-module="prd-architect">
                   <span>📄</span> Generate PRD
                 </button>
-                <button class="qa-btn" data-module="persona-lab">
+                <button class="qa-btn" id="qa-persona-lab" data-module="persona-lab">
                   <span>👥</span> Build Persona
                 </button>
-                <button class="qa-btn" data-module="priority-matrix">
+                <button class="qa-btn" id="qa-priority-matrix" data-module="priority-matrix">
                   <span>🎯</span> Score Features
                 </button>
-                <button class="qa-btn" data-module="feedback-fusion">
+                <button class="qa-btn" id="qa-feedback-fusion" data-module="feedback-fusion">
                   <span>💬</span> Cluster Feedback
                 </button>
-                <button class="qa-btn" data-module="launch-control">
+                <button class="qa-btn" id="qa-launch-control" data-module="launch-control">
                   <span>🛸</span> Plan Launch
                 </button>
               </div>
